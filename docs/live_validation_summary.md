@@ -75,6 +75,21 @@ These are now reported explicitly by `rtbdi validate-reports`:
 These are not hidden failures; the validator records them so the next iteration
 can add report-specific handlers or confirm account permissions.
 
+## Edge-case investigation notes
+
+- Bill Payment Listing: clicking the visible `Export to Excel` submit input does
+  not emit a Playwright download event. A direct authenticated form POST to
+  `BillPaymentListing.fwx` also timed out at 120 seconds for the tested
+  company-wide date range, so this likely needs either tighter required filters
+  or a report-specific server endpoint/parameter check.
+- Employee APH+MRC Report: exports through the visible `Export` button rather
+  than Raw Excel; the report-specific export mode handles this.
+- Finance and Trade-In: use the DevExtreme grid export button rather than Raw
+  Excel; the report-specific export mode handles this.
+- Serial Number Report: downloads a large legacy `.xls` file, but `xlrd` raises
+  `AssertionError`. No local LibreOffice/soffice converter is available in this
+  environment, so this remains a custom legacy-BIFF parsing task.
+
 ## Live answer validation examples
 
 - `What is Natalie Gonzalez's conversion ratio?` -> 48.28%
