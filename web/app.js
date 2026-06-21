@@ -1,5 +1,11 @@
 const apiBase = window.RTBDI_API_BASE || localStorage.getItem("rtbdiApiBase") || "";
-const sessionId = localStorage.getItem("rtbdiSessionId") || crypto.randomUUID();
+function newSessionId() {
+  if (window.crypto && typeof window.crypto.randomUUID === "function") {
+    return window.crypto.randomUUID();
+  }
+  return `session-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+}
+const sessionId = localStorage.getItem("rtbdiSessionId") || newSessionId();
 localStorage.setItem("rtbdiSessionId", sessionId);
 
 const messages = document.querySelector("#messages");
