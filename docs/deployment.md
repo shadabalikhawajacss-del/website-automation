@@ -43,6 +43,14 @@ The static site lives in `web/`.
 Set the backend URL in the page before loading `app.js`, or store it in browser
 local storage as `rtbdiApiBase`.
 
+For Vercel:
+
+1. Set the project root to this repository.
+2. Use `vercel.json`; it rewrites static requests to `web/`.
+3. Copy `web/config.example.js` to `web/config.js` during deployment or inject
+   the same `window.RTBDI_API_BASE` value through your build/deploy process.
+4. `window.RTBDI_API_BASE` should point to the AWS backend URL.
+
 ## Backend hosting options
 
 Best choices:
@@ -53,6 +61,13 @@ Best choices:
 
 Avoid pure serverless for the live automation path unless the runtime supports
 Playwright Chromium reliably and has enough execution time for long exports.
+
+Backend artifacts included:
+
+- `Dockerfile` uses the official Playwright Python image with Chromium support.
+- `docker-compose.yml` runs the API locally with `.env`.
+- `apprunner.yaml` is a starting point for AWS App Runner.
+- `.env.example` lists required environment variables without secrets.
 
 ## Required backend environment variables
 
@@ -78,3 +93,31 @@ uvicorn rtbdi_assistant.api:app --host 0.0.0.0 --port 8000
 ```
 
 Open `web/index.html` and point it to the API base URL.
+
+Or run via Docker:
+
+```bash
+cp .env.example .env
+# edit .env with real secrets
+docker compose up --build
+```
+
+Create a local storage state:
+
+```bash
+RTBDI_USERNAME=... RTBDI_PASSWORD=... ./scripts/create_storage_state.sh
+```
+
+## AWS deployment outline
+
+1. Rotate and store secrets in AWS Secrets Manager or App Runner/ECS secret env.
+2. Build and push the Docker image to ECR.
+3. Run the image in App Runner or ECS Fargate.
+4. Configure:
+   - `RTBDI_BASE_URL`
+   - `RTBDI_USERNAME`
+   - `RTBDI_PASSWORD` or `RTBDI_STORAGE_STATE`
+   - `OPENAI_API_KEY`
+   - `RTBDI_MEMORY_DIR`
+   - `RTBDI_CORS_ORIGINS`
+5. Point Vercel `window.RTBDI_API_BASE` to the AWS service URL.

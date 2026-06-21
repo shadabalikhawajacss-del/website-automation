@@ -1,0 +1,12 @@
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - ./runtime:/data
+    environment:
+      RTBDI_MEMORY_DIR: /data/memory
+      RTBDI_STORAGE_STATE: /data/storage-state.json

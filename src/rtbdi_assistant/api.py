@@ -34,9 +34,10 @@ class ChatResponse(BaseModel):
 
 def create_app() -> FastAPI:
     app = FastAPI(title="RT BDI AI Reporting Assistant")
+    cors_origins = [origin.strip() for origin in os.getenv("RTBDI_CORS_ORIGINS", "*").split(",") if origin.strip()]
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=["*"],
+        allow_origins=cors_origins or ["*"],
         allow_credentials=False,
         allow_methods=["*"],
         allow_headers=["*"],

@@ -157,6 +157,15 @@ The frontend can be hosted as a static site on Vercel or AWS S3/CloudFront. The
 backend should run on AWS ECS/App Runner/EC2 because it needs Playwright
 Chromium, RT BDI credentials, OpenAI secrets, downloads, and session memory.
 
+Deployment artifacts:
+
+- `web/` static chatbot
+- `vercel.json` static frontend config
+- `Dockerfile` backend container
+- `docker-compose.yml` local backend container
+- `apprunner.yaml` AWS App Runner starter
+- `.env.example` safe environment template
+
 See:
 
 - `docs/deployment.md`
