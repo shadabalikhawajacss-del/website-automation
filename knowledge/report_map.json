@@ -1103,7 +1103,7 @@
       "id": "employee_mrc_matrix_report",
       "name": "Employee MRC Matrix Report",
       "tab": "Employee Report",
-      "url_path": null,
+      "url_path": "Employee_MRC_Matrix.fwx",
       "source_type": "grid_or_export",
       "filters": [
         {
@@ -1473,7 +1473,7 @@
       "id": "activation_mrc_by_employee",
       "name": "Employee APH+MRC Report",
       "tab": "Employee Report",
-      "url_path": null,
+      "url_path": "BoxReportByEmp_pcsp.fwx",
       "source_type": "grid_or_export",
       "filters": [
         {
@@ -1605,7 +1605,7 @@
       "id": "employee_mrc_summary",
       "name": "Employee MRC Summary",
       "tab": "Employee Report",
-      "url_path": null,
+      "url_path": "ActivationReport_MRC_Emp.fwx",
       "source_type": "grid",
       "filters": [
         {
@@ -1662,7 +1662,7 @@
       "id": "employee_performance_report",
       "name": "Employee Performance Report",
       "tab": "Employee Report",
-      "url_path": null,
+      "url_path": "emp_performance.fwx",
       "source_type": "grid_or_export",
       "filters": [
         {
@@ -2077,7 +2077,7 @@
       "id": "employee_performance_stack_rank",
       "name": "Employee Performance Stack Rank",
       "tab": "Employee Report",
-      "url_path": null,
+      "url_path": "EMP_StackRank.fwx",
       "source_type": "grid_or_export",
       "filters": [
         {
@@ -2566,7 +2566,7 @@
       "id": "employee_ranking_by_box_sales",
       "name": "Employee Ranking By Box Sales",
       "tab": "Employee Report",
-      "url_path": null,
+      "url_path": "EmpRankingMark.fwx",
       "source_type": "grid_or_export",
       "filters": [
         {
@@ -2849,7 +2849,7 @@
       "id": "box_report_by_employee",
       "name": "Box Report By Employee",
       "tab": "Employee Report",
-      "url_path": null,
+      "url_path": "BoxReportByEmp.fwx",
       "source_type": "grid_or_export",
       "filters": [
         {
@@ -3086,7 +3086,7 @@
       "id": "kpi_report_by_employee",
       "name": "KPI Report By Employee",
       "tab": "Employee Report",
-      "url_path": null,
+      "url_path": "KPIReportByEmp.fwx",
       "source_type": "grid_or_export",
       "filters": [
         {
@@ -3375,7 +3375,7 @@
       "id": "employee_ranking_by_finance",
       "name": "Employee Ranking By Finance",
       "tab": "Employee Report",
-      "url_path": null,
+      "url_path": "EmpRanking_Finance.fwx",
       "source_type": "grid_or_export",
       "filters": [
         {

@@ -94,6 +94,18 @@ Employee Conversion Ratio and Employee Performance exports, including conversion
 ratio, qpay count, employee store/name/user ID, activations, hours, accessory
 sales/profit, employee counts, and store totals.
 
+It also supports the first ranking and merged-report questions:
+
+```bash
+rtbdi live-answer "Top 5 employees by accessory sales."
+rtbdi live-answer "Top 5 stores by total accessory sales."
+rtbdi live-answer "Top accessory seller - what's their gross profit and store?"
+rtbdi live-answer "Top seller's plan mix, their store inventory, and gross profit vs #2."
+```
+
+The merged examples generate multiple reports, join by employee/store, and then
+calculate the answer from the downloaded exports.
+
 ## Current status
 
 The map is a working seed from the supplied files. Reports with exports have exact column names. Reports represented only by screenshots are included with page/filter metadata where visible and marked for live validation before answering production questions.

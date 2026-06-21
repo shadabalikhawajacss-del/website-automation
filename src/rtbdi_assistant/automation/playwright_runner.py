@@ -133,15 +133,23 @@ class PlaywrightReportRunner:
             return
 
         await page.goto(self._login_url(), wait_until="domcontentloaded")
-        href = await page.locator("a").filter(has_text=report.name).first.get_attribute("href")
-        if href:
-            await page.goto(urljoin(page.url, href), wait_until="domcontentloaded")
-            return
+        for label in (report.name, *report.aliases):
+            link = page.locator("a").filter(has_text=label).first
+            if not await link.count():
+                continue
+            href = await link.get_attribute("href")
+            if href and not href.endswith("#"):
+                await page.goto(urljoin(page.url, href), wait_until="domcontentloaded")
+                return
         await page.get_by_text(report.tab, exact=True).hover()
-        await page.locator("a").filter(has_text=report.name).first.click()
+        for label in (report.name, *report.aliases):
+            link = page.locator("a").filter(has_text=label).first
+            if await link.count():
+                await link.click()
+                break
         await page.wait_for_load_state("domcontentloaded")
 
-    async def set_date_range(self, page: Page, report_range: DateRange) -> None:
+    async def set_date_range(self, page: Page, report_range: DateRange, *, required: bool = True) -> bool:
         # The site uses a date picker; direct input is more stable than clicking calendar cells.
         rendered = f"{report_range.start:%B %-d, %Y} - {report_range.end:%B %-d, %Y}"
         hidden_start = page.locator("#frmStart, input[name='frmStart']").first
@@ -167,7 +175,7 @@ class PlaywrightReportRunner:
                     "rendered": rendered,
                 },
             )
-            return
+            return True
 
         candidates = [
             "input[name*='ReportRange']",
@@ -179,8 +187,10 @@ class PlaywrightReportRunner:
             locator = page.locator(selector).first
             if await locator.count():
                 await locator.fill(rendered)
-                return
-        raise RuntimeError("Could not find a date range input on the report page")
+                return True
+        if required:
+            raise RuntimeError("Could not find a date range input on the report page")
+        return False
 
     async def select_filter(self, page: Page, label_or_name: str, value: str) -> None:
         # RT BDI screenshots show Select2-style dropdowns. This method first tries

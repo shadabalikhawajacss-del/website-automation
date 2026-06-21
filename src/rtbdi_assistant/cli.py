@@ -101,7 +101,7 @@ async def _live_export(args: argparse.Namespace) -> Path:
         if not config.storage_state:
             await runner.login(page)
         await runner.open_report(page, report)
-        await runner.set_date_range(page, DateRange(start, end, f"{start.isoformat()} to {end.isoformat()}", explicit=True))
+        await runner.set_date_range(page, DateRange(start, end, f"{start.isoformat()} to {end.isoformat()}", explicit=True), required=False)
         await runner.generate(page)
         return await runner.download_export(page)
 
@@ -115,7 +115,7 @@ async def _download_live_report(report_id: str, report_range: DateRange, args: a
         if not config.storage_state:
             await runner.login(page)
         await runner.open_report(page, report)
-        await runner.set_date_range(page, report_range)
+        await runner.set_date_range(page, report_range, required=False)
         await runner.generate(page)
         return await runner.download_export(page)
 
@@ -145,7 +145,17 @@ async def _live_answer(args: argparse.Namespace) -> dict[str, object]:
         }
 
     lowered = args.question.casefold()
-    if "conversion" in lowered or "ratio" in lowered or "qpay" in lowered:
+    if "plan mix" in lowered and "inventory" in lowered and ("gross profit" in lowered or "#2" in lowered or "number 2" in lowered):
+        report_ids = ("employee_ranking_by_box_sales", "employee_mrc_matrix_report", "kpi_report_by_employee", "inventory_report")
+    elif "accessor" in lowered and ("gross profit" in lowered or "store" in lowered) and ("top" in lowered or "seller" in lowered or "most" in lowered):
+        report_ids = ("employee_ranking_by_box_sales", "kpi_report_by_employee")
+    elif ("top" in lowered or "rank" in lowered or "most" in lowered or "bottom" in lowered) and "gross profit" in lowered:
+        report_ids = ("kpi_report_by_employee",)
+    elif "store" in lowered and ("top" in lowered or "rank" in lowered or "most" in lowered or "worst" in lowered):
+        report_ids = ("employee_performance_report",)
+    elif ("top" in lowered or "rank" in lowered or "most" in lowered or "bottom" in lowered) and ("accessor" in lowered or "activation" in lowered or "boxes" in lowered or "phones" in lowered):
+        report_ids = ("employee_ranking_by_box_sales",)
+    elif "conversion" in lowered or "ratio" in lowered or "qpay" in lowered:
         report_ids = ("employee_conversion_ratio",)
     else:
         report_ids = ("employee_performance_report",)

@@ -175,6 +175,22 @@ def answer_from_exports(question: str, exports: dict[str, Path]) -> AnswerResult
     plan = plan_question(question)
     lowered = question.casefold()
 
+    if {"employee_ranking_by_box_sales", "employee_mrc_matrix_report", "kpi_report_by_employee", "inventory_report"}.issubset(exports) and (
+        "plan mix" in lowered or ("inventory" in lowered and "gross profit" in lowered)
+    ):
+        return _answer_top_seller_multireport(question, exports, plan.date_range)
+
+    if {"employee_ranking_by_box_sales", "kpi_report_by_employee"}.issubset(exports) and "accessor" in lowered and (
+        "gross profit" in lowered or "store" in lowered
+    ):
+        return _answer_top_accessory_with_kpi(question, exports, plan.date_range)
+
+    if "employee_ranking_by_box_sales" in exports and ("top" in lowered or "rank" in lowered or "most" in lowered or "bottom" in lowered):
+        return _answer_employee_ranking(question, exports["employee_ranking_by_box_sales"], plan.date_range)
+
+    if "kpi_report_by_employee" in exports and ("gross profit" in lowered or "payment revenue" in lowered or "mrc revenue" in lowered):
+        return _answer_kpi_ranking(question, exports["kpi_report_by_employee"], plan.date_range)
+
     if "employee_conversion_ratio" in exports and ("conversion" in lowered or "ratio" in lowered or "qpay" in lowered):
         return _answer_conversion(question, exports["employee_conversion_ratio"], plan.date_range)
 
@@ -182,6 +198,190 @@ def answer_from_exports(question: str, exports: dict[str, Path]) -> AnswerResult
         return _answer_performance(question, exports["employee_performance_report"], plan.date_range)
 
     raise ValueError("No supported export was supplied for this question yet")
+
+
+def _top_n(question: str, default: int = 5) -> int:
+    match = re.search(r"\b(?:top|bottom|rank)\s+(\d+)", question, flags=re.IGNORECASE)
+    return int(match.group(1)) if match else default
+
+
+def _rank_metric(question: str) -> tuple[str, str, bool]:
+    lowered = question.casefold()
+    if "accessory profit" in lowered:
+        return "totaccessoryprofit", "accessory profit", True
+    if "accessor" in lowered:
+        return "totaccessory", "accessory sales", True
+    if "hour" in lowered and ("box" in lowered or "activation" in lowered):
+        return "hoursworked", "hours worked", False
+    if "finance" in lowered:
+        return "financecount", "finance count", True
+    return "totact", "total activations", True
+
+
+def _employee_group(df: pd.DataFrame, metric: str) -> pd.DataFrame:
+    rows = []
+    for (username, name), group in df.groupby(["username", "name"], dropna=False):
+        rows.append(
+            {
+                "username": username,
+                "name": name,
+                metric: decimal_sum(group[metric]) if metric in group.columns else Decimal("0"),
+                "rows": len(group),
+            }
+        )
+    return pd.DataFrame(rows)
+
+
+def _answer_employee_ranking(question: str, path: Path, date_range: DateRange) -> AnswerResult:
+    df = load_export_table(path)
+    metric, label, descending = _rank_metric(question)
+    if metric not in df.columns:
+        return AnswerResult(f"The ranking export does not include {label}.", ("employee_ranking_by_box_sales",), date_range, len(df))
+    ranked = _employee_group(df, metric).sort_values(metric, ascending=not descending).head(_top_n(question))
+    lines = []
+    for idx, row in enumerate(ranked.itertuples(index=False), start=1):
+        value = getattr(row, metric)
+        rendered = money(value) if "accessory" in label else number(value)
+        lines.append(f"{idx}. {display_value(row.name)} ({display_value(row.username)}) - {rendered}")
+    return AnswerResult(
+        f"Top {len(lines)} employees by {label}: " + "; ".join(lines) + ".",
+        ("employee_ranking_by_box_sales",),
+        date_range,
+        len(df),
+    )
+
+
+def _answer_kpi_ranking(question: str, path: Path, date_range: DateRange) -> AnswerResult:
+    df = load_export_table(path)
+    lowered = question.casefold()
+    if "payment revenue" in lowered:
+        metric, label = "paymentrev", "payment revenue"
+    elif "mrc revenue" in lowered:
+        metric, label = "mrc_rev", "MRC revenue"
+    else:
+        metric, label = "grossprofit", "gross profit"
+    rows = []
+    for (username, name), group in df.groupby(["username", "name"], dropna=False):
+        rows.append({"username": username, "name": name, metric: decimal_sum(group[metric])})
+    ranked = pd.DataFrame(rows).sort_values(metric, ascending=False).head(_top_n(question, default=3))
+    lines = [
+        f"{idx}. {display_value(row.name)} ({display_value(row.username)}) - {money(getattr(row, metric))}"
+        for idx, row in enumerate(ranked.itertuples(index=False), start=1)
+    ]
+    return AnswerResult(f"Top {len(lines)} employees by {label}: " + "; ".join(lines) + ".", ("kpi_report_by_employee",), date_range, len(df))
+
+
+PLAN_COLUMNS = (
+    "plan25",
+    "plan30",
+    "plan40",
+    "plan50",
+    "flex70",
+    "flex60",
+    "flex50",
+    "plan50aal",
+    "plan60",
+    "plan60aal",
+    "upgrade",
+    "sor",
+    "php",
+    "secure5",
+    "secure10",
+    "hotspot",
+    "watch",
+    "smartride",
+    "tablet15",
+    "tablet20",
+    "tablet30",
+    "iot",
+    "freeline",
+)
+
+
+def _sum_for_user(df: pd.DataFrame, username: object, column: str) -> Decimal:
+    if column not in df.columns or "username" not in df.columns:
+        return Decimal("0")
+    rows = df[df["username"].map(normalize_text) == normalize_text(username)]
+    return decimal_sum(rows[column])
+
+
+def _top_users_by_activations(ranking: pd.DataFrame, count: int = 2) -> pd.DataFrame:
+    grouped = _employee_group(ranking, "totact")
+    return grouped.sort_values("totact", ascending=False).head(count)
+
+
+def _answer_top_seller_multireport(question: str, exports: dict[str, Path], date_range: DateRange) -> AnswerResult:
+    ranking = load_export_table(exports["employee_ranking_by_box_sales"])
+    mrc = load_export_table(exports["employee_mrc_matrix_report"])
+    kpi = load_export_table(exports["kpi_report_by_employee"])
+    inventory = load_export_table(exports["inventory_report"])
+
+    top_two = _top_users_by_activations(ranking, 2)
+    if len(top_two) < 2:
+        return AnswerResult("I could not find the top two employees by activations.", tuple(exports), date_range, len(ranking))
+
+    top = top_two.iloc[0]
+    second = top_two.iloc[1]
+    top_username = top["username"]
+    second_username = second["username"]
+
+    plan_parts = []
+    top_mrc = mrc[mrc["username"].map(normalize_text) == normalize_text(top_username)] if "username" in mrc.columns else mrc.iloc[0:0]
+    for column in PLAN_COLUMNS:
+        if column in top_mrc.columns:
+            value = decimal_sum(top_mrc[column])
+            if value:
+                plan_parts.append(f"{column} {number(value)}")
+    plan_summary = ", ".join(plan_parts[:8]) if plan_parts else "no non-zero plan/device columns found"
+
+    top_kpi = kpi[kpi["username"].map(normalize_text) == normalize_text(top_username)] if "username" in kpi.columns else kpi.iloc[0:0]
+    second_kpi = kpi[kpi["username"].map(normalize_text) == normalize_text(second_username)] if "username" in kpi.columns else kpi.iloc[0:0]
+    top_gp = decimal_sum(top_kpi["grossprofit"]) if "grossprofit" in top_kpi.columns else Decimal("0")
+    second_gp = decimal_sum(second_kpi["grossprofit"]) if "grossprofit" in second_kpi.columns else Decimal("0")
+    gp_delta = top_gp - second_gp
+
+    stores = sorted({display_value(value) for value in top_kpi.get("company", []) if display_value(value) != "unknown"})
+    inv_rows = inventory[inventory["company"].map(lambda value: normalize_text(value) in {normalize_text(store) for store in stores})] if stores and "company" in inventory.columns else inventory.iloc[0:0]
+    inv_qty = decimal_sum(inv_rows["qty"]) if "qty" in inv_rows.columns else Decimal("0")
+    inv_value = Decimal("0")
+    if {"qty", "cost"}.issubset(inv_rows.columns):
+        for _, row in inv_rows.iterrows():
+            qty = parse_decimal(row.get("qty")) or Decimal("0")
+            cost = parse_decimal(row.get("cost")) or Decimal("0")
+            inv_value += qty * cost
+
+    answer = (
+        f"Top employee by activations is {display_value(top['name'])} ({display_value(top_username)}) with {number(top['totact'])} activations. "
+        f"#2 is {display_value(second['name'])} ({display_value(second_username)}) with {number(second['totact'])}. "
+        f"Plan/device mix for #1: {plan_summary}. "
+        f"#1 store(s): {', '.join(stores) if stores else 'not found in KPI report'}. "
+        f"Those store(s) have {number(inv_qty)} inventory units on hand with estimated cost value {money(inv_value)}. "
+        f"Gross profit: #1 {money(top_gp)} vs #2 {money(second_gp)} ({money(gp_delta)} difference)."
+    )
+    return AnswerResult(
+        answer,
+        ("employee_ranking_by_box_sales", "employee_mrc_matrix_report", "kpi_report_by_employee", "inventory_report"),
+        date_range,
+        len(ranking) + len(mrc) + len(kpi) + len(inventory),
+    )
+
+
+def _answer_top_accessory_with_kpi(question: str, exports: dict[str, Path], date_range: DateRange) -> AnswerResult:
+    ranking = load_export_table(exports["employee_ranking_by_box_sales"])
+    kpi = load_export_table(exports["kpi_report_by_employee"])
+    ranked = _employee_group(ranking, "totaccessory").sort_values("totaccessory", ascending=False)
+    if ranked.empty:
+        return AnswerResult("I could not find accessory sales in the ranking report.", tuple(exports), date_range, len(ranking))
+    top = ranked.iloc[0]
+    top_username = top["username"]
+    top_kpi = kpi[kpi["username"].map(normalize_text) == normalize_text(top_username)] if "username" in kpi.columns else kpi.iloc[0:0]
+    stores = sorted({display_value(value) for value in top_kpi.get("company", []) if display_value(value) != "unknown"})
+    gross_profit = decimal_sum(top_kpi["grossprofit"]) if "grossprofit" in top_kpi.columns else Decimal("0")
+    answer = (
+        f"Top accessory seller is {display_value(top['name'])} ({display_value(top_username)}) with {money(top['totaccessory'])} in accessory sales. "
+        f"Their gross profit is {money(gross_profit)} and their store(s) are {', '.join(stores) if stores else 'not found in KPI report'}."
+    )
+    return AnswerResult(answer, ("employee_ranking_by_box_sales", "kpi_report_by_employee"), date_range, len(ranking) + len(kpi))
 
 
 def _answer_conversion(question: str, path: Path, date_range: DateRange) -> AnswerResult:
@@ -225,6 +425,9 @@ def _answer_performance(question: str, path: Path, date_range: DateRange) -> Ans
     filtered, store_text = filter_store(df, question)
     lowered = question.casefold()
 
+    if "store" in lowered and ("top" in lowered or "rank" in lowered or "most" in lowered or "worst" in lowered):
+        return _answer_store_ranking(question, df, date_range)
+
     if ("how many employees" in lowered or "employees at" in lowered or "employees work" in lowered) and store_text:
         count = filtered["username"].nunique() if "username" in filtered.columns else len(filtered)
         return AnswerResult(f"{store_text} has {count:,} employees in Employee Performance Report.", ("employee_performance_report",), date_range, len(filtered))
@@ -265,3 +468,27 @@ def _answer_performance(question: str, path: Path, date_range: DateRange) -> Ans
         answer = f"{name} ({username}) works at {store}."
 
     return AnswerResult(answer, ("employee_performance_report",), date_range, len(rows))
+
+
+def _answer_store_ranking(question: str, df: pd.DataFrame, date_range: DateRange) -> AnswerResult:
+    lowered = question.casefold()
+    if "accessory profit" in lowered:
+        column, label, descending = "totaccessoryprofit", "accessory profit", True
+    elif "accessor" in lowered:
+        column, label, descending = "totaccessory", "accessory sales", True
+    elif "worst" in lowered and "conversion" in lowered:
+        column, label, descending = "boxperhour", "box per hour", False
+    else:
+        column, label, descending = "totact", "total activations", True
+    if "company" not in df.columns or column not in df.columns:
+        return AnswerResult(f"Employee Performance Report does not include the columns needed to rank stores by {label}.", ("employee_performance_report",), date_range, len(df))
+    rows = []
+    for company, group in df.groupby("company", dropna=False):
+        rows.append({"company": company, column: decimal_sum(group[column])})
+    ranked = pd.DataFrame(rows).sort_values(column, ascending=not descending).head(_top_n(question, default=5))
+    lines = []
+    for idx, row in enumerate(ranked.itertuples(index=False), start=1):
+        value = getattr(row, column)
+        rendered = money(value) if "accessory" in label else number(value)
+        lines.append(f"{idx}. {display_value(row.company)} - {rendered}")
+    return AnswerResult(f"Top {len(lines)} stores by {label}: " + "; ".join(lines) + ".", ("employee_performance_report",), date_range, len(df))
