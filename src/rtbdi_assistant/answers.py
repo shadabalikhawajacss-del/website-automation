@@ -215,6 +215,9 @@ def answer_from_exports(question: str, exports: dict[str, Path]) -> AnswerResult
     if "trade_in_custom_report" in exports:
         return _answer_trade_in(question, exports["trade_in_custom_report"], plan.date_range)
 
+    if "bill_payment_listing" in exports:
+        return _answer_bill_payment(question, exports["bill_payment_listing"], plan.date_range)
+
     if "phone_trend_by_market" in exports:
         return _answer_phone_trend(question, exports["phone_trend_by_market"], plan.date_range)
 
@@ -508,6 +511,30 @@ def _answer_trade_in(question: str, path: Path, date_range: DateRange) -> Answer
     applied = decimal_sum(_column_or_zero(df, "TI Applied"))
     offered = decimal_sum(_column_or_zero(df, "Offered"))
     return AnswerResult(f"Trade-in totals: offered {money(offered)}, applied {money(applied)}, rows {len(df):,}.", ("trade_in_custom_report",), date_range, len(df))
+
+
+def _answer_bill_payment(question: str, path: Path, date_range: DateRange) -> AnswerResult:
+    df = load_export_table(path)
+    filtered, store_text = filter_store(df, question)
+    lowered = question.casefold()
+    if "profit" in lowered:
+        total = decimal_sum(_column_or_zero(filtered, "profit"))
+        label = "bill payment profit"
+    elif "tax" in lowered:
+        total = decimal_sum(_column_or_zero(filtered, "taxamount"))
+        label = "bill payment tax"
+    else:
+        total = decimal_sum(_column_or_zero(filtered, "total"))
+        label = "bill payment total"
+    invoice_count = filtered["invno"].nunique() if "invno" in filtered.columns else len(filtered)
+    location = f" at {store_text}" if store_text else ""
+    return AnswerResult(
+        f"Live {label}{location} is {money(total)} across {invoice_count:,} invoices/rows.",
+        ("bill_payment_listing",),
+        date_range,
+        len(filtered),
+        context={"last_stores": [store_text] if store_text else [], "last_metric": label},
+    )
 
 
 def _item_tokens(question: str) -> list[str]:

@@ -176,3 +176,21 @@ HOUSTON,002,ROCKON NASA,IP13,Apple iPhone 13,5,1,2,3
     assert "Samsung inventory quantity is 3" in samsung.answer
     assert "sale7 units" in sold.answer
     assert "2" in sold.answer
+
+
+def test_answers_bill_payment_listing(tmp_path):
+    bill = _write(
+        tmp_path / "bill.csv",
+        """
+marketid,custno,company,prodline,category,username,invno,adddate,item,itmdesc,qty,price,cost,profit,pptax,taxamount,total
+HOUSTON,001,ROCKON NASA,BILL,Bill Pay,AAA111,INV1,2026-06-01,ITEM,Payment,1,50,0,5,0,1,51
+HOUSTON,001,ROCKON NASA,BILL,Bill Pay,BBB222,INV2,2026-06-02,ITEM,Payment,1,75,0,7,0,2,77
+HOUSTON,002,ROCKON MAIN,BILL,Bill Pay,CCC333,INV3,2026-06-03,ITEM,Payment,1,100,0,10,0,3,103
+""",
+    )
+
+    result = answer_from_exports("Total bill payment at ROCKON NASA.", {"bill_payment_listing": bill})
+
+    assert "$128.00" in result.answer
+    assert "2" in result.answer
+    assert result.rows_used == 2

@@ -130,6 +130,8 @@ def select_live_reports(question: str, memory: ConversationMemory | None = None)
         report_ids = ("finance_report", "kpi_report_by_employee")
     elif "accessory" in lowered and ("gross profit" in lowered or "store" in lowered) and ("top" in lowered or "seller" in lowered or "most" in lowered):
         report_ids = ("employee_ranking_by_box_sales", "kpi_report_by_employee")
+    elif "bill payment" in lowered or "bill pay" in lowered or "payment listing" in lowered:
+        report_ids = ("bill_payment_listing",)
     elif "trade" in lowered or "carrier" in lowered or "make and model" in lowered:
         report_ids = ("trade_in_custom_report",)
     elif "finance" in lowered or "financed" in lowered or "approved amount" in lowered:

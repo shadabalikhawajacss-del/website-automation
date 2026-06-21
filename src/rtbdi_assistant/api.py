@@ -10,7 +10,7 @@ from pydantic import BaseModel
 
 from .answers import answer_from_exports
 from .automation.playwright_runner import BrowserConfig, PlaywrightReportRunner
-from .cli import GRID_EXPORT_REPORTS, EXPORT_BUTTON_REPORTS
+from .cli import _download_or_fallback_export
 from .home import answer_home_question, extract_home_snapshot
 from .intent import ConversationMemory, select_live_reports
 from .models import DateRange
@@ -109,11 +109,7 @@ def create_app() -> FastAPI:
                         await runner.open_report(page, report)
                         await runner.set_date_range(page, plan.date_range, required=False)
                         await runner.generate(page, required=False)
-                        exports[report_id] = await runner.download_export(
-                            page,
-                            prefer_grid_export=report_id in GRID_EXPORT_REPORTS,
-                            prefer_export_button=report_id in EXPORT_BUTTON_REPORTS,
-                        )
+                        exports[report_id] = await _download_or_fallback_export(runner, page, report_id)
                 result = answer_from_exports(intent.canonical_question, exports)
                 memory.update(result.context)
                 memory.save(memory_path)

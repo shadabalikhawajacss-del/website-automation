@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 from urllib.parse import urljoin
+import re
 
 from playwright.async_api import Browser, BrowserContext, Page, async_playwright
 
@@ -56,6 +57,8 @@ class PlaywrightReportRunner:
         if self.config.storage_state:
             kwargs["storage_state"] = str(self.config.storage_state)
         self._context = await self._browser.new_context(**kwargs)
+        self._context.set_default_timeout(120_000)
+        self._context.set_default_navigation_timeout(120_000)
         return self
 
     async def __aexit__(self, *_: object) -> None:
@@ -131,7 +134,7 @@ class PlaywrightReportRunner:
         last_error: Exception | None = None
         for attempt in range(3):
             try:
-                await page.goto(url, wait_until="domcontentloaded")
+                await page.goto(url, wait_until="domcontentloaded", timeout=120_000)
                 return
             except Exception as exc:
                 last_error = exc
@@ -254,4 +257,52 @@ class PlaywrightReportRunner:
         download = await download_info.value
         target = self.config.downloads_dir / download.suggested_filename
         await download.save_as(target)
+        return target
+
+    async def post_form_export(self, page: Page, *, field_overrides: dict[str, str] | None = None, fallback_filename: str = "report-export.xls") -> Path:
+        self.config.downloads_dir.mkdir(parents=True, exist_ok=True)
+        form = page.locator("form").first
+        if not await form.count():
+            raise RuntimeError("No form was available for direct export")
+        data = await form.evaluate(
+            """form => {
+                const out = {};
+                for (const el of Array.from(form.elements)) {
+                    if (!el.name) continue;
+                    if ((el.type === 'checkbox' || el.type === 'radio') && !el.checked) continue;
+                    out[el.name] = el.value || '';
+                }
+                return out;
+            }"""
+        )
+        for key, value in (field_overrides or {}).items():
+            data[key] = value
+        action = await form.get_attribute("action")
+        response = await page.context.request.post(urljoin(page.url, action or page.url), form=data, timeout=120_000)
+        body = await response.body()
+        if response.status >= 400 or not body:
+            raise RuntimeError(f"Direct form export failed with HTTP {response.status} and {len(body)} bytes")
+        disposition = response.headers.get("content-disposition", "")
+        match = re.search(r"filename=\"?([^\";]+)", disposition)
+        filename = match.group(1) if match else fallback_filename
+        target = self.config.downloads_dir / filename
+        target.write_bytes(body)
+        return target
+
+    async def save_visible_tables(self, page: Page, filename: str) -> Path:
+        self.config.downloads_dir.mkdir(parents=True, exist_ok=True)
+        tables = await page.locator("table").evaluate_all(
+            """tables => tables
+                .map((table, index) => ({ index, text: table.innerText || "", html: table.outerHTML || "" }))
+                .filter(item => item.text.trim().length > 0 && item.html.trim().length > 0)"""
+        )
+        useful = [
+            item["html"]
+            for item in tables
+            if not ("Account:" in item["text"] and "LOGOUT" in item["text"]) and len(item["text"].splitlines()) > 1
+        ]
+        if not useful:
+            raise RuntimeError("No generated HTML tables were available to save")
+        target = self.config.downloads_dir / filename
+        target.write_text("<html><body>" + "\n".join(useful) + "</body></html>", encoding="utf-8")
         return target

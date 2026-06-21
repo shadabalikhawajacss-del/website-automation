@@ -40,6 +40,7 @@ Reports validated as open/generate/export/parse:
 - Trade-In Custom Report
 - Phone Trend By Market
 - Phone Trend By Market -> Model
+- Bill Payment Listing
 
 ### Inventory
 
@@ -55,22 +56,21 @@ Reports validated as open/generate/export/parse:
 - RMA Shipped Report
 - Serial Demo/Display Report
 - Serial Aging Report
+- Serial Number Report
 
 ## Known live validation edge cases
 
 These are now reported explicitly by `rtbdi validate-reports`:
 
-- Profit Loss Report: access denied for the supplied login.
-- Buy-Back InStock Report: access denied for the supplied login.
-- Serial Number Report: downloads a malformed legacy `.xls` file that `xlrd`
-  cannot parse (`downloaded_parse_failed`).
-- Bill Payment Listing: page has an `Export to Excel` submit input, but the
-  current browser event flow does not emit a Playwright download event.
-- Promo Fee Report, ESN Change Report, Inventory Transaction Report: page opens
-  and generates, but live export did not emit a download event in validation.
-- Tangible Adjusted Report: download event occurred, but the browser canceled
-  the file save in validation.
-- Not Verified Serial Report: export did not emit a download event in validation.
+- Profit Loss Report: excluded from required coverage because the supplied site/login does not use it.
+- Buy-Back InStock Report: excluded from required coverage because the supplied site/login does not use it.
+- Bill Payment Listing: uses a direct authenticated form export with explicit
+  Market/State filters; normal Playwright download events are not emitted.
+- Promo Fee Report, ESN Change Report, Inventory Transaction Report, and
+  Tangible Adjusted Report: normal download events are unreliable, so validation
+  captures generated HTML tables as a fallback.
+- Not Verified Serial Report: no generated data table was available for the
+  tested date/filter combination; validator reports this as `no_data`.
 
 These are not hidden failures; the validator records them so the next iteration
 can add report-specific handlers or confirm account permissions.
@@ -78,17 +78,16 @@ can add report-specific handlers or confirm account permissions.
 ## Edge-case investigation notes
 
 - Bill Payment Listing: clicking the visible `Export to Excel` submit input does
-  not emit a Playwright download event. A direct authenticated form POST to
-  `BillPaymentListing.fwx` also timed out at 120 seconds for the tested
-  company-wide date range, so this likely needs either tighter required filters
-  or a report-specific server endpoint/parameter check.
+  not emit a Playwright download event. A direct authenticated form POST with
+  explicit `frmMarketID=HOUSTON` and `frmStateID=TX` returns the CSV export and
+  is now handled.
 - Employee APH+MRC Report: exports through the visible `Export` button rather
   than Raw Excel; the report-specific export mode handles this.
 - Finance and Trade-In: use the DevExtreme grid export button rather than Raw
   Excel; the report-specific export mode handles this.
-- Serial Number Report: downloads a large legacy `.xls` file, but `xlrd` raises
-  `AssertionError`. No local LibreOffice/soffice converter is available in this
-  environment, so this remains a custom legacy-BIFF parsing task.
+- Serial Number Report: downloads a large raw legacy BIFF `.xls`; `xlrd` raises
+  `AssertionError`, so a lightweight raw BIFF fallback parser now recovers the
+  table.
 
 ## Live answer validation examples
 
@@ -97,6 +96,7 @@ can add report-specific handlers or confirm account permissions.
 - `Top 5 employees by accessory sales.` -> Aftab, Sabina, Hajra, hafi, MUHAMMAD
 - `Top 5 stores by total accessory sales.` -> ROCKON MAIN, WALLER, ROSENBERG, NASA, TOMBALL
 - `Total financed amount.` -> $6,302.32
+- `Total bill payment company-wide this month.` -> $649,728.60
 - `Which employee had the highest financed dollar amount and their gross profit?` -> Ramiro, gross profit $-12,622.97
 - `How many trade-ins applied, by carrier?` -> unknown 3, Verizon 2
 - `Top 5 fastest-selling phones in the last 30 days.` -> TripleSIM, Samsung A16, Samsung Tab A9+, Samsung A17, TMO REVVL Tab 2

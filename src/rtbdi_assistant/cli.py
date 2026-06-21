@@ -22,6 +22,35 @@ from .planner import plan_question, plan_to_dict
 
 GRID_EXPORT_REPORTS = {"finance_report", "trade_in_custom_report"}
 EXPORT_BUTTON_REPORTS = {"activation_mrc_by_employee"}
+FORM_POST_EXPORT_REPORTS = {"bill_payment_listing"}
+HTML_TABLE_FALLBACK_REPORTS = {
+    "promo_fee_report",
+    "esn_change_report",
+    "inventory_transaction_report",
+    "not_verified_serial_report",
+    "tangible_adjusted_report",
+}
+
+
+async def _download_or_fallback_export(runner: PlaywrightReportRunner, page, report_id: str) -> Path:
+    if report_id in FORM_POST_EXPORT_REPORTS:
+        return await runner.post_form_export(
+            page,
+            field_overrides={"frmMarketID": "HOUSTON", "frmStateID": "TX", "btnExcel": "Export to Excel"},
+            fallback_filename=f"{report_id}.csv",
+        )
+    if report_id in HTML_TABLE_FALLBACK_REPORTS:
+        return await runner.save_visible_tables(page, f"{report_id}.html")
+    try:
+        return await runner.download_export(
+            page,
+            prefer_grid_export=report_id in GRID_EXPORT_REPORTS,
+            prefer_export_button=report_id in EXPORT_BUTTON_REPORTS,
+        )
+    except Exception:
+        if report_id not in HTML_TABLE_FALLBACK_REPORTS:
+            raise
+        return await runner.save_visible_tables(page, f"{report_id}.html")
 
 
 def _cmd_plan(args: argparse.Namespace) -> int:
@@ -139,11 +168,7 @@ async def _live_export(args: argparse.Namespace) -> Path:
         await runner.open_report(page, report)
         await runner.set_date_range(page, DateRange(start, end, f"{start.isoformat()} to {end.isoformat()}", explicit=True), required=False)
         await runner.generate(page, required=False)
-        return await runner.download_export(
-            page,
-            prefer_grid_export=report.id in GRID_EXPORT_REPORTS,
-            prefer_export_button=report.id in EXPORT_BUTTON_REPORTS,
-        )
+        return await _download_or_fallback_export(runner, page, report.id)
 
 
 async def _download_live_report(report_id: str, report_range: DateRange, args: argparse.Namespace) -> Path:
@@ -157,11 +182,7 @@ async def _download_live_report(report_id: str, report_range: DateRange, args: a
         await runner.open_report(page, report)
         await runner.set_date_range(page, report_range, required=False)
         await runner.generate(page, required=False)
-        return await runner.download_export(
-            page,
-            prefer_grid_export=report_id in GRID_EXPORT_REPORTS,
-            prefer_export_button=report_id in EXPORT_BUTTON_REPORTS,
-        )
+        return await _download_or_fallback_export(runner, page, report_id)
 
 
 def _cmd_live_export(args: argparse.Namespace) -> int:
@@ -270,11 +291,7 @@ async def _validate_reports(args: argparse.Namespace) -> list[dict[str, object]]
                     continue
                 result["date_set"] = await runner.set_date_range(page, report_range, required=False)
                 await runner.generate(page, required=False)
-                path = await runner.download_export(
-                    page,
-                    prefer_grid_export=report.id in GRID_EXPORT_REPORTS,
-                    prefer_export_button=report.id in EXPORT_BUTTON_REPORTS,
-                )
+                path = await _download_or_fallback_export(runner, page, report.id)
                 summary = summarize_export(path)
                 result.update(
                     {
@@ -287,7 +304,8 @@ async def _validate_reports(args: argparse.Namespace) -> list[dict[str, object]]
                 )
                 await page.close()
             except Exception as exc:
-                result.update({"status": "failed", "error": f"{type(exc).__name__}: {exc}"})
+                status = "no_data" if "No generated HTML tables were available" in str(exc) else "failed"
+                result.update({"status": status, "error": f"{type(exc).__name__}: {exc}"})
                 if not args.continue_on_error:
                     results.append(result)
                     return results

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
+import struct
 from typing import Iterable
 
 import pandas as pd
@@ -58,8 +59,55 @@ def read_export(path: Path) -> dict[str, pd.DataFrame]:
     if path.read_bytes()[:64].lstrip().startswith(b"<"):
         return {f"table_{i + 1}": table for i, table in enumerate(pd.read_html(path))}
     if suffix == ".xls":
-        return pd.read_excel(path, sheet_name=None, header=None, dtype=str, engine="xlrd")
+        try:
+            return pd.read_excel(path, sheet_name=None, header=None, dtype=str, engine="xlrd")
+        except AssertionError:
+            return {"raw_biff": read_raw_biff(path)}
     raise ValueError(f"Unsupported export type: {path}")
+
+
+def read_raw_biff(path: Path) -> pd.DataFrame:
+    """Read simple raw BIFF streams that are not wrapped in OLE.
+
+    Some RT BDI legacy exports are raw BIFF records. `xlrd` rejects at least one
+    of them with AssertionError, but the LABEL and NUMBER records are enough to
+    reconstruct a useful table.
+    """
+
+    blob = path.read_bytes()
+    cells: dict[tuple[int, int], object] = {}
+    position = 0
+    while position + 4 <= len(blob):
+        opcode = int.from_bytes(blob[position : position + 2], "little")
+        length = int.from_bytes(blob[position + 2 : position + 4], "little")
+        payload = blob[position + 4 : position + 4 + length]
+        if len(payload) < length:
+            break
+        if opcode == 0x0004 and length >= 8:
+            row = int.from_bytes(payload[0:2], "little")
+            col = int.from_bytes(payload[2:4], "little")
+            text_len = payload[7]
+            text = payload[8 : 8 + text_len].decode("latin1", errors="ignore")
+            cells[(row, col)] = text
+        elif opcode == 0x0003 and length >= 15:
+            row = int.from_bytes(payload[0:2], "little")
+            col = int.from_bytes(payload[2:4], "little")
+            cells[(row, col)] = struct.unpack("<d", payload[7:15])[0]
+        elif opcode == 0x0005 and length >= 8:
+            row = int.from_bytes(payload[0:2], "little")
+            col = int.from_bytes(payload[2:4], "little")
+            cells[(row, col)] = payload[7]
+        position += 4 + length
+
+    if not cells:
+        raise ValueError(f"No raw BIFF cells found in {path}")
+
+    max_row = max(row for row, _ in cells)
+    max_col = max(col for _, col in cells)
+    rows = []
+    for row in range(max_row + 1):
+        rows.append([cells.get((row, col), "") for col in range(max_col + 1)])
+    return pd.DataFrame(rows)
 
 
 def summarize_export(path: Path) -> ExportSummary:
