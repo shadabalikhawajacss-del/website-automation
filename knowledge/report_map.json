@@ -30,7 +30,7 @@
       "id": "trade_in_custom_report",
       "name": "Trade-In Custom Report",
       "tab": "Sales Reports",
-      "url_path": "TradeInReport_Custom.fwx",
+      "url_path": "TradeIn_Custom.fwx",
       "source_type": "grid_or_export",
       "filters": [
         {
@@ -173,7 +173,7 @@
       "id": "phone_trend_by_market",
       "name": "Phone Trend By Market",
       "tab": "Sales Reports",
-      "url_path": null,
+      "url_path": "SalesTrend_CSR.fwx",
       "source_type": "grid_or_export",
       "filters": [
         {
@@ -315,7 +315,7 @@
       "id": "phone_trend_by_market_item_or_model",
       "name": "Phone Trend By Market -> Model",
       "tab": "Sales Reports",
-      "url_path": null,
+      "url_path": "SalesTrend_Item_CSR.fwx",
       "source_type": "grid_or_export",
       "filters": [
         {
@@ -435,7 +435,7 @@
       "id": "esn_change_report",
       "name": "ESN Change Report",
       "tab": "Sales Reports",
-      "url_path": null,
+      "url_path": "ESNChangeReport.fwx",
       "source_type": "grid",
       "filters": [
         {
@@ -481,7 +481,7 @@
       "id": "promo_fee_report",
       "name": "Promo Fee Report",
       "tab": "Sales Reports",
-      "url_path": null,
+      "url_path": "PromoFeeReport.fwx",
       "source_type": "grid",
       "filters": [
         {
@@ -694,7 +694,7 @@
       "id": "bill_payment_listing",
       "name": "Bill Payment Listing (Excel)",
       "tab": "Sales Reports",
-      "url_path": null,
+      "url_path": "BillPaymentListing.fwx",
       "source_type": "export",
       "filters": [
         {
@@ -900,7 +900,7 @@
       "id": "profit_loss_report",
       "name": "Profit Loss Report",
       "tab": "Sales Reports",
-      "url_path": null,
+      "url_path": "ProfitLossReport.fwx",
       "source_type": "export",
       "filters": [
         {
@@ -3627,7 +3627,7 @@
       "id": "serial_number_tracking",
       "name": "Serial Number Tracking",
       "tab": "Inventory Report",
-      "url_path": null,
+      "url_path": "SerialNumberTracking.fwx",
       "source_type": "grid",
       "filters": [
         {
@@ -3936,7 +3936,7 @@
       "id": "inventory_transaction_report",
       "name": "Inventory Transaction Report",
       "tab": "Inventory Report",
-      "url_path": null,
+      "url_path": "Inventory_Transaction.fwx",
       "source_type": "grid_or_export",
       "filters": [
         {
@@ -4088,7 +4088,7 @@
       "id": "inventory_audit_log",
       "name": "Inventory Audit Log",
       "tab": "Inventory Report",
-      "url_path": null,
+      "url_path": "InventoryAuditLog.fwx",
       "source_type": "grid_or_export",
       "filters": [
         {
@@ -4243,7 +4243,7 @@
       "id": "inventory_tangible_audit_log",
       "name": "Inventory Tangible Audit Log",
       "tab": "Inventory Report",
-      "url_path": null,
+      "url_path": "InventoryAuditLog_Tangible.fwx",
       "source_type": "grid_or_export",
       "filters": [
         {
@@ -4409,7 +4409,7 @@
       "id": "po_listing_report",
       "name": "PO Listing Report",
       "tab": "Inventory Report",
-      "url_path": null,
+      "url_path": "POListing.fwx",
       "source_type": "grid_or_export",
       "filters": [
         {
@@ -4632,7 +4632,7 @@
       "id": "inventory_transfer_listing",
       "name": "Inventory Transfer Listing",
       "tab": "Inventory Report",
-      "url_path": null,
+      "url_path": "InventoryTransferListing.fwx",
       "source_type": "grid_or_export",
       "filters": [
         {
@@ -4792,7 +4792,7 @@
       "id": "inventory_transfer_detail",
       "name": "Inventory Transfer Detail",
       "tab": "Inventory Report",
-      "url_path": null,
+      "url_path": "InventoryTransferReport.fwx",
       "source_type": "grid_or_export",
       "filters": [
         {
@@ -4979,7 +4979,7 @@
       "id": "inventory_matrix",
       "name": "Inventory Matrix",
       "tab": "Inventory Report",
-      "url_path": null,
+      "url_path": "InventoryMatrix.fwx",
       "source_type": "grid",
       "filters": [
         {
@@ -5030,7 +5030,7 @@
       "id": "buy_back_instock_report",
       "name": "Buy-Back InStock Report",
       "tab": "Inventory Report",
-      "url_path": null,
+      "url_path": "BuyBackReport.fwx",
       "source_type": "grid",
       "filters": [
         {
@@ -5082,7 +5082,7 @@
       "id": "serial_rma_report",
       "name": "RMA Serial Report",
       "tab": "Inventory Report",
-      "url_path": null,
+      "url_path": "RMAReport.fwx",
       "source_type": "grid_or_export",
       "filters": [
         {
@@ -5277,7 +5277,7 @@
       "id": "rma_shipped_report",
       "name": "RMA Shipped Report",
       "tab": "Inventory Report",
-      "url_path": null,
+      "url_path": "RMAShipment.fwx",
       "source_type": "grid",
       "filters": [
         {
@@ -5328,7 +5328,7 @@
       "id": "serial_demo_display_report",
       "name": "Serial Demo/Display Report",
       "tab": "Inventory Report",
-      "url_path": null,
+      "url_path": "SerialDemoReport.fwx",
       "source_type": "grid",
       "filters": [
         {
@@ -5380,7 +5380,7 @@
       "id": "serial_adjusted_report",
       "name": "Serial Adjusted Report",
       "tab": "Inventory Report",
-      "url_path": null,
+      "url_path": "SerialAdjustedReport.fwx",
       "source_type": "grid_or_export",
       "filters": [
         {
@@ -5593,7 +5593,7 @@
       "id": "tangible_adjusted_report",
       "name": "Tangible Adjusted Report",
       "tab": "Inventory Report",
-      "url_path": null,
+      "url_path": "AdjustedReport.fwx",
       "source_type": "grid_or_export",
       "filters": [
         {
@@ -5714,7 +5714,7 @@
       "id": "not_verified_serial_report",
       "name": "Not Verified Serial Report",
       "tab": "Inventory Report",
-      "url_path": null,
+      "url_path": "SerialNumberReport_NotVerified.fwx",
       "source_type": "grid",
       "filters": [
         {
@@ -5765,7 +5765,7 @@
       "id": "serial_number_report",
       "name": "Serial Number Report",
       "tab": "Inventory Report",
-      "url_path": null,
+      "url_path": "SerialNumberReport.fwx",
       "source_type": "grid",
       "filters": [
         {
@@ -5820,7 +5820,7 @@
       "id": "serial_aging_report",
       "name": "Serial Aging Report",
       "tab": "Inventory Report",
-      "url_path": null,
+      "url_path": "SerialAgingReport.fwx",
       "source_type": "grid",
       "filters": [
         {
@@ -5872,7 +5872,7 @@
       "id": "open_po_report",
       "name": "Open PO Report",
       "tab": "Inventory Report",
-      "url_path": null,
+      "url_path": "OpenPOReport.fwx",
       "source_type": "grid",
       "filters": [
         {

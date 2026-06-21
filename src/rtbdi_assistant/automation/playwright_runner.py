@@ -127,19 +127,33 @@ class PlaywrightReportRunner:
                 return
         raise RuntimeError(f"Could not find input for selectors: {', '.join(selectors)}")
 
+    async def _goto(self, page: Page, url: str) -> None:
+        last_error: Exception | None = None
+        for attempt in range(3):
+            try:
+                await page.goto(url, wait_until="domcontentloaded")
+                return
+            except Exception as exc:
+                last_error = exc
+                if attempt == 2:
+                    break
+                await page.wait_for_timeout(1000 * (attempt + 1))
+        if last_error:
+            raise last_error
+
     async def open_report(self, page: Page, report: Report) -> None:
         if report.url_path:
-            await page.goto(self._base_directory() + "/" + report.url_path.lstrip("/"), wait_until="domcontentloaded")
+            await self._goto(page, self._base_directory() + "/" + report.url_path.lstrip("/"))
             return
 
-        await page.goto(self._login_url(), wait_until="domcontentloaded")
+        await self._goto(page, self._login_url())
         for label in (report.name, *report.aliases):
             link = page.locator("a").filter(has_text=label).first
             if not await link.count():
                 continue
             href = await link.get_attribute("href")
             if href and not href.endswith("#"):
-                await page.goto(urljoin(page.url, href), wait_until="domcontentloaded")
+                await self._goto(page, urljoin(page.url, href))
                 return
         await page.get_by_text(report.tab, exact=True).hover()
         for label in (report.name, *report.aliases):
@@ -212,10 +226,12 @@ class PlaywrightReportRunner:
         await button.click()
         await page.wait_for_load_state("networkidle")
 
-    async def download_export(self, page: Page) -> Path:
+    async def download_export(self, page: Page, *, prefer_grid_export: bool = False) -> Path:
         self.config.downloads_dir.mkdir(parents=True, exist_ok=True)
-        async with page.expect_download() as download_info:
-            export_button = page.locator(".export-xlsx-button").first
+        async with page.expect_download(timeout=120_000) as download_info:
+            export_button = page.locator(".dx-datagrid-export-button").first if prefer_grid_export else page.locator(".export-xlsx-button").first
+            if not await export_button.count():
+                export_button = page.locator(".export-xlsx-button").first if prefer_grid_export else page.locator(".dx-datagrid-export-button").first
             if not await export_button.count():
                 export_button = page.locator("button, input[type='button'], a, div").filter(has_text="Excel").first
             if not await export_button.count():

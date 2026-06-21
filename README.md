@@ -101,6 +101,13 @@ rtbdi live-answer "Top 5 employees by accessory sales."
 rtbdi live-answer "Top 5 stores by total accessory sales."
 rtbdi live-answer "Top accessory seller - what's their gross profit and store?"
 rtbdi live-answer "Top seller's plan mix, their store inventory, and gross profit vs #2."
+rtbdi live-answer "Total financed amount."
+rtbdi live-answer "Which employee had the highest financed dollar amount and their gross profit?"
+rtbdi live-answer "How many trade-ins applied, by carrier?"
+rtbdi live-answer "How many Samsung phones in stock?"
+rtbdi live-answer "Top 5 fastest-selling phones in the last 30 days."
+rtbdi live-answer "Total open PO amount by vendor."
+rtbdi live-answer "Total transfer cost between stores last month."
 ```
 
 The merged examples generate multiple reports, join by employee/store, and then

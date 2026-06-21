@@ -65,7 +65,14 @@ def normalize_text(value: object) -> str:
 
 def display_value(value: object) -> str:
     text = str(value or "").strip()
+    if text.casefold() == "nan":
+        return "unknown"
     return text if text else "unknown"
+
+
+def has_real_value(value: object) -> bool:
+    text = str(value or "").strip()
+    return bool(text) and text.casefold() != "nan"
 
 
 def employee_name(row: pd.Series) -> str:
@@ -175,6 +182,9 @@ def answer_from_exports(question: str, exports: dict[str, Path]) -> AnswerResult
     plan = plan_question(question)
     lowered = question.casefold()
 
+    if {"finance_report", "kpi_report_by_employee"}.issubset(exports) and ("gross profit" in lowered or "gp" in lowered):
+        return _answer_finance_with_kpi(question, exports, plan.date_range)
+
     if {"employee_ranking_by_box_sales", "employee_mrc_matrix_report", "kpi_report_by_employee", "inventory_report"}.issubset(exports) and (
         "plan mix" in lowered or ("inventory" in lowered and "gross profit" in lowered)
     ):
@@ -196,6 +206,29 @@ def answer_from_exports(question: str, exports: dict[str, Path]) -> AnswerResult
 
     if "employee_performance_report" in exports:
         return _answer_performance(question, exports["employee_performance_report"], plan.date_range)
+
+    if "finance_report" in exports:
+        return _answer_finance(question, exports["finance_report"], plan.date_range)
+
+    if "trade_in_custom_report" in exports:
+        return _answer_trade_in(question, exports["trade_in_custom_report"], plan.date_range)
+
+    if "phone_trend_by_market" in exports:
+        return _answer_phone_trend(question, exports["phone_trend_by_market"], plan.date_range)
+
+    if "inventory_report" in exports:
+        return _answer_inventory(question, exports["inventory_report"], plan.date_range)
+
+    if "po_listing_report" in exports or "open_po_report" in exports:
+        path = exports.get("po_listing_report") or exports["open_po_report"]
+        return _answer_po_listing(question, path, plan.date_range)
+
+    if "inventory_transfer_listing" in exports:
+        return _answer_transfer_listing(question, exports["inventory_transfer_listing"], plan.date_range)
+
+    if "inventory_audit_log" in exports or "inventory_tangible_audit_log" in exports:
+        path = exports.get("inventory_tangible_audit_log") or exports["inventory_audit_log"]
+        return _answer_audit(question, path, plan.date_range)
 
     raise ValueError("No supported export was supplied for this question yet")
 
@@ -382,6 +415,207 @@ def _answer_top_accessory_with_kpi(question: str, exports: dict[str, Path], date
         f"Their gross profit is {money(gross_profit)} and their store(s) are {', '.join(stores) if stores else 'not found in KPI report'}."
     )
     return AnswerResult(answer, ("employee_ranking_by_box_sales", "kpi_report_by_employee"), date_range, len(ranking) + len(kpi))
+
+
+def _column_or_zero(df: pd.DataFrame, column: str) -> pd.Series:
+    return df[column] if column in df.columns else pd.Series([], dtype=object)
+
+
+def _answer_finance(question: str, path: Path, date_range: DateRange) -> AnswerResult:
+    df = load_export_table(path)
+    if "Emp ID" in df.columns:
+        df = df[df["Emp ID"].map(has_real_value)]
+    lowered = question.casefold()
+    if "finance company" in lowered or "company appears most" in lowered:
+        counts = df["Finance Company"].fillna("").astype(str).str.strip().value_counts() if "Finance Company" in df.columns else pd.Series(dtype=int)
+        if counts.empty:
+            answer = "I could not find finance company values in the Finance report."
+        else:
+            answer = f"The finance company appearing most is {counts.index[0]} with {int(counts.iloc[0])} deals."
+        return AnswerResult(answer, ("finance_report",), date_range, len(df))
+
+    if "approved" in lowered and "financed" in lowered:
+        approved = decimal_sum(_column_or_zero(df, "Approved Amount"))
+        financed = decimal_sum(_column_or_zero(df, "Financed Amount"))
+        return AnswerResult(f"Approved finance amount is {money(approved)} vs financed amount {money(financed)}.", ("finance_report",), date_range, len(df))
+
+    if "average" in lowered:
+        avg = decimal_mean(_column_or_zero(df, "Financed Amount"))
+        answer = f"Average financed amount per deal is {money(avg or Decimal('0'))}."
+        return AnswerResult(answer, ("finance_report",), date_range, len(df))
+
+    if "who" in lowered or "employee" in lowered or "highest" in lowered or "most" in lowered:
+        metric = "Financed Amount" if "amount" in lowered or "dollar" in lowered else "Invoice #"
+        rows = []
+        if "Emp ID" in df.columns:
+            for emp_id, group in df.groupby("Emp ID", dropna=False):
+                value = decimal_sum(group["Financed Amount"]) if metric == "Financed Amount" else Decimal(str(group["Invoice #"].nunique() if "Invoice #" in group.columns else len(group)))
+                rows.append({"emp_id": emp_id, "value": value})
+        ranked = sorted(rows, key=lambda row: row["value"], reverse=True)
+        if not ranked:
+            answer = "I could not rank employees from the Finance report."
+        else:
+            label = "financed amount" if metric == "Financed Amount" else "financed deals"
+            rendered = money(ranked[0]["value"]) if metric == "Financed Amount" else number(ranked[0]["value"])
+            answer = f"Top employee by {label} is {display_value(ranked[0]['emp_id'])} with {rendered}."
+        return AnswerResult(answer, ("finance_report",), date_range, len(df))
+
+    financed = decimal_sum(_column_or_zero(df, "Financed Amount"))
+    return AnswerResult(f"Total financed amount is {money(financed)}.", ("finance_report",), date_range, len(df))
+
+
+def _answer_trade_in(question: str, path: Path, date_range: DateRange) -> AnswerResult:
+    df = load_export_table(path)
+    lowered = question.casefold()
+    group_column = "Carrier" if "carrier" in lowered else "Make" if "make" in lowered else "Model" if "model" in lowered else None
+    if group_column and group_column in df.columns:
+        counts = df[group_column].fillna("").astype(str).str.strip().replace("", "unknown").value_counts()
+        lines = [f"{key}: {int(value)}" for key, value in counts.head(10).items()]
+        return AnswerResult(f"Trade-ins by {group_column.lower()}: " + "; ".join(lines) + ".", ("trade_in_custom_report",), date_range, len(df))
+    applied = decimal_sum(_column_or_zero(df, "TI Applied"))
+    offered = decimal_sum(_column_or_zero(df, "Offered"))
+    return AnswerResult(f"Trade-in totals: offered {money(offered)}, applied {money(applied)}, rows {len(df):,}.", ("trade_in_custom_report",), date_range, len(df))
+
+
+def _item_tokens(question: str) -> list[str]:
+    tokens = _question_tokens(question)
+    return [token for token in tokens if token not in {"sold", "last", "days", "units", "top", "fastest", "selling", "model", "highest"}]
+
+
+def _filter_item_text(df: pd.DataFrame, question: str) -> pd.DataFrame:
+    if "itmdesc" not in df.columns:
+        return df
+    tokens = _item_tokens(question)
+    if not tokens:
+        return df
+    filtered = df[df["itmdesc"].map(lambda value: all(token in normalize_text(value) for token in tokens))]
+    return filtered if not filtered.empty else df[df["itmdesc"].map(lambda value: any(token in normalize_text(value) for token in tokens))]
+
+
+def _answer_phone_trend(question: str, path: Path, date_range: DateRange) -> AnswerResult:
+    df = load_export_table(path)
+    lowered = question.casefold()
+    metric = "sale7" if "7" in lowered else "sale14" if "14" in lowered else "sale30"
+    if "slow mover" in lowered or ("high stock" in lowered and "low" in lowered):
+        rows = []
+        for _, row in df.iterrows():
+            onhand = parse_decimal(row.get("onhand")) or Decimal("0")
+            sales = parse_decimal(row.get(metric)) or Decimal("0")
+            if onhand > 0:
+                rows.append({"desc": row.get("itmdesc"), "item": row.get("item"), "onhand": onhand, "sales": sales, "score": onhand - sales})
+        ranked = sorted(rows, key=lambda row: row["score"], reverse=True)[:5]
+        lines = [f"{display_value(row['item'])} {display_value(row['desc'])} - on hand {number(row['onhand'])}, {metric} {number(row['sales'])}" for row in ranked]
+        return AnswerResult("Potential slow movers: " + "; ".join(lines) + ".", ("phone_trend_by_market",), date_range, len(df))
+
+    filtered = _filter_item_text(df, question)
+    if any(word in lowered for word in ("how many", "total")) and filtered is not df:
+        total = decimal_sum(filtered[metric])
+        return AnswerResult(f"Total {metric} units for matching item(s) is {number(total)}.", ("phone_trend_by_market",), date_range, len(filtered))
+
+    rows = []
+    group_cols = ["item", "itmdesc"] if {"item", "itmdesc"}.issubset(df.columns) else ["itmdesc"]
+    for keys, group in df.groupby(group_cols, dropna=False):
+        if not isinstance(keys, tuple):
+            keys = (keys,)
+        rows.append({"keys": keys, metric: decimal_sum(group[metric]), "onhand": decimal_sum(group["onhand"]) if "onhand" in group.columns else Decimal("0")})
+    ranked = sorted(rows, key=lambda row: row[metric], reverse=True)[:_top_n(question)]
+    lines = [f"{idx}. {' - '.join(display_value(value) for value in row['keys'])}: {number(row[metric])}" for idx, row in enumerate(ranked, start=1)]
+    return AnswerResult(f"Top {len(lines)} items by {metric}: " + "; ".join(lines) + ".", ("phone_trend_by_market",), date_range, len(df))
+
+
+def _answer_inventory(question: str, path: Path, date_range: DateRange) -> AnswerResult:
+    df = load_export_table(path)
+    filtered, store_text = filter_store(df, question)
+    lowered = question.casefold()
+    if "apple" in lowered or "samsung" in lowered or "motorola" in lowered:
+        manufacturer = next(word for word in ("apple", "samsung", "motorola") if word in lowered)
+        filtered = filtered[filtered["manufacturer"].map(lambda value: manufacturer in normalize_text(value))] if "manufacturer" in filtered.columns else filtered.iloc[0:0]
+        qty = decimal_sum(filtered["qty"]) if "qty" in filtered.columns else Decimal("0")
+        return AnswerResult(f"{manufacturer.title()} inventory quantity is {number(qty)}{' at ' + store_text if store_text else ' company-wide'}.", ("inventory_report",), date_range, len(filtered))
+
+    if "serialized" in lowered and "serialized" in filtered.columns:
+        counts = filtered["serialized"].fillna("unknown").astype(str).str.strip().value_counts()
+        lines = [f"{key}: {value}" for key, value in counts.items()]
+        return AnswerResult("Serialized vs non-serialized inventory: " + "; ".join(lines) + ".", ("inventory_report",), date_range, len(filtered))
+
+    if "black" in lowered and "color" in filtered.columns:
+        filtered = filtered[filtered["color"].map(lambda value: "black" in normalize_text(value))]
+        sample = filtered.head(10)
+        lines = [f"{display_value(row.get('item'))} - {display_value(row.get('itmdesc'))} ({number(parse_decimal(row.get('qty')) or Decimal('0'))})" for _, row in sample.iterrows()]
+        return AnswerResult("Black inventory items: " + "; ".join(lines) + ".", ("inventory_report",), date_range, len(filtered))
+
+    if "value" in lowered:
+        value = Decimal("0")
+        if {"qty", "cost"}.issubset(filtered.columns):
+            for _, row in filtered.iterrows():
+                value += (parse_decimal(row.get("qty")) or Decimal("0")) * (parse_decimal(row.get("cost")) or Decimal("0"))
+        return AnswerResult(f"Inventory cost value is {money(value)}{' at ' + store_text if store_text else ' company-wide'}.", ("inventory_report",), date_range, len(filtered))
+
+    if "most" in lowered and "manufacturer" in filtered.columns:
+        rows = []
+        for manufacturer, group in filtered.groupby("manufacturer", dropna=False):
+            rows.append({"manufacturer": manufacturer, "qty": decimal_sum(group["qty"])})
+        ranked = sorted(rows, key=lambda row: row["qty"], reverse=True)[:5]
+        lines = [f"{idx}. {display_value(row['manufacturer'])}: {number(row['qty'])}" for idx, row in enumerate(ranked, start=1)]
+        return AnswerResult("Top manufacturers by units: " + "; ".join(lines) + ".", ("inventory_report",), date_range, len(filtered))
+
+    qty = decimal_sum(filtered["qty"]) if "qty" in filtered.columns else Decimal("0")
+    return AnswerResult(f"Inventory quantity is {number(qty)}{' at ' + store_text if store_text else ' company-wide'}.", ("inventory_report",), date_range, len(filtered))
+
+
+def _answer_po_listing(question: str, path: Path, date_range: DateRange) -> AnswerResult:
+    df = load_export_table(path)
+    lowered = question.casefold()
+    if "vendor" in lowered:
+        rows = []
+        for vendor, group in df.groupby("vendor", dropna=False):
+            rows.append({"vendor": vendor, "openamount": decimal_sum(group["openamount"]) if "openamount" in group.columns else Decimal("0")})
+        ranked = sorted(rows, key=lambda row: row["openamount"], reverse=True)[:10]
+        lines = [f"{display_value(row['vendor'])}: {money(row['openamount'])}" for row in ranked]
+        return AnswerResult("Open PO amount by vendor: " + "; ".join(lines) + ".", ("po_listing_report",), date_range, len(df))
+    open_amount = decimal_sum(_column_or_zero(df, "openamount"))
+    return AnswerResult(f"Total open PO amount is {money(open_amount)} across {len(df):,} PO rows.", ("po_listing_report",), date_range, len(df))
+
+
+def _answer_transfer_listing(question: str, path: Path, date_range: DateRange) -> AnswerResult:
+    df = load_export_table(path)
+    total = decimal_sum(_column_or_zero(df, "cost")) + decimal_sum(_column_or_zero(df, "shippingcost"))
+    return AnswerResult(f"Total transfer cost is {money(total)} across {len(df):,} transfer rows.", ("inventory_transfer_listing",), date_range, len(df))
+
+
+def _answer_audit(question: str, path: Path, date_range: DateRange) -> AnswerResult:
+    df = load_export_table(path)
+    if "varianceqty" in df.columns:
+        variance = decimal_sum(df["varianceqty"])
+        return AnswerResult(f"Total tangible audit variance quantity is {number(variance)} across {len(df):,} rows.", ("inventory_tangible_audit_log",), date_range, len(df))
+    unmatched = decimal_sum(_column_or_zero(df, "unmatchedcount"))
+    missing = decimal_sum(_column_or_zero(df, "missing"))
+    return AnswerResult(f"Inventory audit unmatched count is {number(unmatched)} and missing count is {number(missing)}.", ("inventory_audit_log",), date_range, len(df))
+
+
+def _answer_finance_with_kpi(question: str, exports: dict[str, Path], date_range: DateRange) -> AnswerResult:
+    finance = load_export_table(exports["finance_report"])
+    if "Emp ID" in finance.columns:
+        finance = finance[finance["Emp ID"].map(has_real_value)]
+    kpi = load_export_table(exports["kpi_report_by_employee"])
+    rows = []
+    if "Emp ID" in finance.columns:
+        for emp_id, group in finance.groupby("Emp ID", dropna=False):
+            rows.append({"username": emp_id, "financed": decimal_sum(group["Financed Amount"]) if "Financed Amount" in group.columns else Decimal("0")})
+    ranked = sorted(rows, key=lambda row: row["financed"], reverse=True)
+    if not ranked:
+        return AnswerResult("I could not find employee finance rows to join with KPI.", ("finance_report", "kpi_report_by_employee"), date_range, len(finance) + len(kpi))
+    top = ranked[0]
+    top_kpi = kpi[kpi["username"].map(normalize_text) == normalize_text(top["username"])] if "username" in kpi.columns else kpi.iloc[0:0]
+    name = display_value(top_kpi.iloc[0].get("name")) if not top_kpi.empty else display_value(top["username"])
+    stores = sorted({display_value(value) for value in top_kpi.get("company", []) if display_value(value) != "unknown"})
+    gross_profit = decimal_sum(top_kpi["grossprofit"]) if "grossprofit" in top_kpi.columns else Decimal("0")
+    return AnswerResult(
+        f"Top employee by financed dollars is {name} ({display_value(top['username'])}) with {money(top['financed'])}; their KPI gross profit is {money(gross_profit)} and store(s) are {', '.join(stores) if stores else 'not found'}.",
+        ("finance_report", "kpi_report_by_employee"),
+        date_range,
+        len(finance) + len(kpi),
+    )
 
 
 def _answer_conversion(question: str, path: Path, date_range: DateRange) -> AnswerResult:

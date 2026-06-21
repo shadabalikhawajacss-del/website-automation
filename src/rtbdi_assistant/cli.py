@@ -103,7 +103,7 @@ async def _live_export(args: argparse.Namespace) -> Path:
         await runner.open_report(page, report)
         await runner.set_date_range(page, DateRange(start, end, f"{start.isoformat()} to {end.isoformat()}", explicit=True), required=False)
         await runner.generate(page)
-        return await runner.download_export(page)
+        return await runner.download_export(page, prefer_grid_export=report.id in {"finance_report", "trade_in_custom_report"})
 
 
 async def _download_live_report(report_id: str, report_range: DateRange, args: argparse.Namespace) -> Path:
@@ -117,7 +117,7 @@ async def _download_live_report(report_id: str, report_range: DateRange, args: a
         await runner.open_report(page, report)
         await runner.set_date_range(page, report_range, required=False)
         await runner.generate(page)
-        return await runner.download_export(page)
+        return await runner.download_export(page, prefer_grid_export=report_id in {"finance_report", "trade_in_custom_report"})
 
 
 def _cmd_live_export(args: argparse.Namespace) -> int:
@@ -147,8 +147,24 @@ async def _live_answer(args: argparse.Namespace) -> dict[str, object]:
     lowered = args.question.casefold()
     if "plan mix" in lowered and "inventory" in lowered and ("gross profit" in lowered or "#2" in lowered or "number 2" in lowered):
         report_ids = ("employee_ranking_by_box_sales", "employee_mrc_matrix_report", "kpi_report_by_employee", "inventory_report")
+    elif "finance" in lowered and ("gross profit" in lowered or "gp" in lowered):
+        report_ids = ("finance_report", "kpi_report_by_employee")
     elif "accessor" in lowered and ("gross profit" in lowered or "store" in lowered) and ("top" in lowered or "seller" in lowered or "most" in lowered):
         report_ids = ("employee_ranking_by_box_sales", "kpi_report_by_employee")
+    elif "trade" in lowered or "carrier" in lowered or "make and model" in lowered:
+        report_ids = ("trade_in_custom_report",)
+    elif "finance" in lowered or "financed" in lowered or "approved amount" in lowered:
+        report_ids = ("finance_report",)
+    elif "slow mover" in lowered or "sold in the last" in lowered or "sold in last" in lowered or "fastest-selling" in lowered or "30-day" in lowered or "7-day" in lowered or "a16" in lowered or "revvl" in lowered:
+        report_ids = ("phone_trend_by_market",)
+    elif "purchase order" in lowered or "open po" in lowered or ("po" in lowered and "top" not in lowered):
+        report_ids = ("po_listing_report",)
+    elif "transfer" in lowered:
+        report_ids = ("inventory_transfer_listing",)
+    elif "audit" in lowered or "variance" in lowered or "unmatched" in lowered:
+        report_ids = ("inventory_tangible_audit_log",) if "tangible" in lowered or "variance" in lowered else ("inventory_audit_log",)
+    elif "inventory" in lowered or "stock" in lowered or "on hand" in lowered or "apple" in lowered or "samsung" in lowered or "motorola" in lowered or "serialized" in lowered:
+        report_ids = ("inventory_report",)
     elif ("top" in lowered or "rank" in lowered or "most" in lowered or "bottom" in lowered) and "gross profit" in lowered:
         report_ids = ("kpi_report_by_employee",)
     elif "store" in lowered and ("top" in lowered or "rank" in lowered or "most" in lowered or "worst" in lowered):
