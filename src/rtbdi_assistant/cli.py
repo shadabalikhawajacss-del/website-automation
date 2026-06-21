@@ -7,6 +7,7 @@ from dataclasses import asdict
 from datetime import date
 from pathlib import Path
 
+from .answers import answer_from_exports
 from .automation.playwright_runner import BrowserConfig, PlaywrightReportRunner
 from .exports import iter_export_files, summarize_export
 from .knowledge import load_knowledge
@@ -105,12 +106,68 @@ async def _live_export(args: argparse.Namespace) -> Path:
         return await runner.download_export(page)
 
 
+async def _download_live_report(report_id: str, report_range: DateRange, args: argparse.Namespace) -> Path:
+    km = load_knowledge(args.knowledge) if getattr(args, "knowledge", None) else load_knowledge()
+    report = km.get(report_id)
+    config = BrowserConfig.from_env(headless=not args.headful, downloads_dir=Path(args.downloads_dir))
+    async with PlaywrightReportRunner(config) as runner:
+        page = await runner.new_page()
+        if not config.storage_state:
+            await runner.login(page)
+        await runner.open_report(page, report)
+        await runner.set_date_range(page, report_range)
+        await runner.generate(page)
+        return await runner.download_export(page)
+
+
 def _cmd_live_export(args: argparse.Namespace) -> int:
     path = asyncio.run(_live_export(args))
     summary = summarize_export(path)
     payload = asdict(summary)
     payload["path"] = str(path)
     print(json.dumps(payload, indent=2, default=str))
+    return 0
+
+
+async def _live_answer(args: argparse.Namespace) -> dict[str, object]:
+    plan = plan_question(args.question)
+    if plan.needs_clarification:
+        return {
+            "answer": plan.needs_clarification,
+            "reports_used": [],
+            "date_range": {
+                "start": plan.date_range.start.isoformat(),
+                "end": plan.date_range.end.isoformat(),
+                "label": plan.date_range.label,
+            },
+            "rows_used": 0,
+            "notes": list(plan.notes),
+        }
+
+    lowered = args.question.casefold()
+    if "conversion" in lowered or "ratio" in lowered or "qpay" in lowered:
+        report_ids = ("employee_conversion_ratio",)
+    else:
+        report_ids = ("employee_performance_report",)
+
+    exports = {report_id: await _download_live_report(report_id, plan.date_range, args) for report_id in report_ids}
+    result = answer_from_exports(args.question, exports)
+    return {
+        "answer": result.answer,
+        "reports_used": list(result.reports_used),
+        "date_range": {
+            "start": result.date_range.start.isoformat(),
+            "end": result.date_range.end.isoformat(),
+            "label": result.date_range.label,
+        },
+        "rows_used": result.rows_used,
+        "notes": list(result.notes),
+        "exports": {report_id: str(path) for report_id, path in exports.items()},
+    }
+
+
+def _cmd_live_answer(args: argparse.Namespace) -> int:
+    print(json.dumps(asyncio.run(_live_answer(args)), indent=2))
     return 0
 
 
@@ -154,6 +211,13 @@ def build_parser() -> argparse.ArgumentParser:
     live_export.add_argument("--headful", action="store_true", help="Show the browser while running")
     live_export.add_argument("--downloads-dir", default="downloads")
     live_export.set_defaults(func=_cmd_live_export)
+
+    live_answer = subparsers.add_parser("live-answer", help="Answer a supported question using live RT BDI exports")
+    live_answer.add_argument("question")
+    live_answer.add_argument("--knowledge")
+    live_answer.add_argument("--headful", action="store_true", help="Show the browser while running")
+    live_answer.add_argument("--downloads-dir", default="downloads")
+    live_answer.set_defaults(func=_cmd_live_answer)
     return parser
 
 

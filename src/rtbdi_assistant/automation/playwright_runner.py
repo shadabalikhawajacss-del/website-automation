@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
+from urllib.parse import urljoin
 
 from playwright.async_api import Browser, BrowserContext, Page, async_playwright
 
@@ -132,8 +133,12 @@ class PlaywrightReportRunner:
             return
 
         await page.goto(self._login_url(), wait_until="domcontentloaded")
+        href = await page.locator("a").filter(has_text=report.name).first.get_attribute("href")
+        if href:
+            await page.goto(urljoin(page.url, href), wait_until="domcontentloaded")
+            return
         await page.get_by_text(report.tab, exact=True).hover()
-        await page.get_by_text(report.name, exact=True).click()
+        await page.locator("a").filter(has_text=report.name).first.click()
         await page.wait_for_load_state("domcontentloaded")
 
     async def set_date_range(self, page: Page, report_range: DateRange) -> None:

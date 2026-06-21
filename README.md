@@ -82,6 +82,18 @@ rtbdi live-export employee_conversion_ratio --start 2026-06-01 --end 2026-06-21
 
 The command prints the downloaded export path plus detected sheet/column metadata.
 
+Answer a supported live question:
+
+```bash
+RTBDI_STORAGE_STATE=/secure/path/rtbdi-storage-state.json \
+rtbdi live-answer "What is Natalie Gonzalez's conversion ratio?"
+```
+
+The first live-answer scope supports simple employee/store questions backed by
+Employee Conversion Ratio and Employee Performance exports, including conversion
+ratio, qpay count, employee store/name/user ID, activations, hours, accessory
+sales/profit, employee counts, and store totals.
+
 ## Current status
 
 The map is a working seed from the supplied files. Reports with exports have exact column names. Reports represented only by screenshots are included with page/filter metadata where visible and marked for live validation before answering production questions.
