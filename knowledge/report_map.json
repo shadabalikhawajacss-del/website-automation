@@ -1,0 +1,5924 @@
+{
+  "site": "https://www.myrtpos.com/newbdi/",
+  "generated_from": [
+    "Google Drive folder 1mgpe27FQqNYDPmSKcXOwdKiNzcEBquEa",
+    "Screenshots.zip",
+    "Purely Wireless Data.zip"
+  ],
+  "reports": [
+    {
+      "id": "home_dashboard",
+      "name": "Home Dashboard",
+      "tab": "Home",
+      "url_path": null,
+      "source_type": "dashboard",
+      "filters": [],
+      "controls": [],
+      "columns": [],
+      "aliases": [
+        "dashboard",
+        "top 10 stores",
+        "mtd sales",
+        "projections"
+      ],
+      "join_keys": [],
+      "screenshot_folder": "Home",
+      "export_sample": null,
+      "notes": "Home screenshots include MTD Sales, Projections, and Top 10 Stores panels."
+    },
+    {
+      "id": "trade_in_custom_report",
+      "name": "Trade-In Custom Report",
+      "tab": "Sales Reports",
+      "url_path": "TradeIn_Custom.fwx",
+      "source_type": "grid_or_export",
+      "filters": [
+        {
+          "name": "Market ID",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Region",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Store",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Report Range",
+          "control_type": "date_range",
+          "required": false,
+          "notes": ""
+        }
+      ],
+      "controls": [
+        "Generate",
+        "Raw Excel"
+      ],
+      "columns": [
+        {
+          "name": "Store Name",
+          "meaning": "Store display name in custom export.",
+          "data_type": "text",
+          "semantic_tags": [
+            "store",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "Emp ID",
+          "meaning": "Employee/user ID.",
+          "data_type": "text",
+          "semantic_tags": [
+            "employee",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "Invoice #",
+          "meaning": "Invoice number.",
+          "data_type": "text",
+          "semantic_tags": [
+            "invoice",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "Invoice Date",
+          "meaning": "Invoice date.",
+          "data_type": "date",
+          "semantic_tags": [
+            "date"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "Offered",
+          "meaning": "Export column named Offered; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "TI Applied",
+          "meaning": "Export column named TI Applied; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "RMA",
+          "meaning": "Export column named RMA; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "Serial",
+          "meaning": "Serial/IMEI value.",
+          "data_type": "text",
+          "semantic_tags": [
+            "serial",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "Carrier",
+          "meaning": "Export column named Carrier; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "Make",
+          "meaning": "Export column named Make; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "Model",
+          "meaning": "Export column named Model; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        }
+      ],
+      "aliases": [
+        "trade in",
+        "trade-in",
+        "rma trade"
+      ],
+      "join_keys": [
+        "Store Name",
+        "Emp ID",
+        "Invoice #"
+      ],
+      "screenshot_folder": "Sales Reports/TRADE-IN REPORT CUSTOM",
+      "export_sample": "Purely Wireless Data/Purely Wireless Data/Sales Reports/TradeIn Custom Report.xlsx",
+      "notes": "Columns recovered from provided export."
+    },
+    {
+      "id": "phone_trend_by_market",
+      "name": "Phone Trend By Market",
+      "tab": "Sales Reports",
+      "url_path": "SalesTrend_CSR.fwx",
+      "source_type": "grid_or_export",
+      "filters": [
+        {
+          "name": "Market ID",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Region",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Store",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Report Range",
+          "control_type": "date_range",
+          "required": false,
+          "notes": ""
+        }
+      ],
+      "controls": [
+        "Generate",
+        "Raw Excel"
+      ],
+      "columns": [
+        {
+          "name": "marketid",
+          "meaning": "Market identifier used by RT BDI filters and exports.",
+          "data_type": "text",
+          "semantic_tags": [
+            "market",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "custno",
+          "meaning": "Store/customer number.",
+          "data_type": "text",
+          "semantic_tags": [
+            "store",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "company",
+          "meaning": "Store or company display name.",
+          "data_type": "text",
+          "semantic_tags": [
+            "store",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "item",
+          "meaning": "Item/SKU number.",
+          "data_type": "text",
+          "semantic_tags": [
+            "item",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "itmdesc",
+          "meaning": "Item description.",
+          "data_type": "text",
+          "semantic_tags": [
+            "item"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "onhand",
+          "meaning": "Quantity on hand.",
+          "data_type": "number",
+          "semantic_tags": [
+            "inventory",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "sale7",
+          "meaning": "Sales quantity over 7 days.",
+          "data_type": "number",
+          "semantic_tags": [
+            "trend",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "sale14",
+          "meaning": "Sales quantity over 14 days.",
+          "data_type": "number",
+          "semantic_tags": [
+            "trend",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "sale30",
+          "meaning": "Sales quantity over 30 days.",
+          "data_type": "number",
+          "semantic_tags": [
+            "trend",
+            "metric"
+          ],
+          "source": "export"
+        }
+      ],
+      "aliases": [
+        "phone trend",
+        "sales trend",
+        "phones by market"
+      ],
+      "join_keys": [
+        "marketid",
+        "custno",
+        "company",
+        "item"
+      ],
+      "screenshot_folder": "Sales Reports/Phone Trend By Market",
+      "export_sample": "Purely Wireless Data/Purely Wireless Data/Sales Reports/SalesTrend_CSR_7HO098AIX.XLS",
+      "notes": "Columns recovered from provided export."
+    },
+    {
+      "id": "phone_trend_by_market_item_or_model",
+      "name": "Phone Trend By Market -> Model",
+      "tab": "Sales Reports",
+      "url_path": "SalesTrend_Item_CSR.fwx",
+      "source_type": "grid_or_export",
+      "filters": [
+        {
+          "name": "Market ID",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Region",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Store",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Report Range",
+          "control_type": "date_range",
+          "required": false,
+          "notes": ""
+        }
+      ],
+      "controls": [
+        "Generate",
+        "Raw Excel"
+      ],
+      "columns": [
+        {
+          "name": "marketid",
+          "meaning": "Market identifier used by RT BDI filters and exports.",
+          "data_type": "text",
+          "semantic_tags": [
+            "market",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "item",
+          "meaning": "Item/SKU number.",
+          "data_type": "text",
+          "semantic_tags": [
+            "item",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "itmdesc",
+          "meaning": "Item description.",
+          "data_type": "text",
+          "semantic_tags": [
+            "item"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "onhand",
+          "meaning": "Quantity on hand.",
+          "data_type": "number",
+          "semantic_tags": [
+            "inventory",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "sale7",
+          "meaning": "Sales quantity over 7 days.",
+          "data_type": "number",
+          "semantic_tags": [
+            "trend",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "sale14",
+          "meaning": "Sales quantity over 14 days.",
+          "data_type": "number",
+          "semantic_tags": [
+            "trend",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "sale30",
+          "meaning": "Sales quantity over 30 days.",
+          "data_type": "number",
+          "semantic_tags": [
+            "trend",
+            "metric"
+          ],
+          "source": "export"
+        }
+      ],
+      "aliases": [
+        "phone trend item",
+        "phone trend model",
+        "model trend"
+      ],
+      "join_keys": [
+        "marketid",
+        "item"
+      ],
+      "screenshot_folder": "Sales Reports/Phone Trend By Market item or model",
+      "export_sample": "Purely Wireless Data/Purely Wireless Data/Sales Reports/SalesTrend_Item_CSR_7HO0997ZX.XLS",
+      "notes": "Columns recovered from provided export."
+    },
+    {
+      "id": "esn_change_report",
+      "name": "ESN Change Report",
+      "tab": "Sales Reports",
+      "url_path": "ESNChangeReport.fwx",
+      "source_type": "grid",
+      "filters": [
+        {
+          "name": "Market ID",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Region",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Store",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Report Range",
+          "control_type": "date_range",
+          "required": false,
+          "notes": ""
+        }
+      ],
+      "controls": [
+        "Generate",
+        "Raw Excel"
+      ],
+      "columns": [],
+      "aliases": [
+        "esn change",
+        "imei change"
+      ],
+      "join_keys": [],
+      "screenshot_folder": "Sales Reports/ESN Change Report",
+      "export_sample": null,
+      "notes": "Screenshot metadata present; export sample not provided yet."
+    },
+    {
+      "id": "promo_fee_report",
+      "name": "Promo Fee Report",
+      "tab": "Sales Reports",
+      "url_path": "PromoFeeReport.fwx",
+      "source_type": "grid",
+      "filters": [
+        {
+          "name": "Market ID",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Region",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Store",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Report Range",
+          "control_type": "date_range",
+          "required": false,
+          "notes": ""
+        }
+      ],
+      "controls": [
+        "Generate",
+        "Raw Excel"
+      ],
+      "columns": [],
+      "aliases": [
+        "promo fee",
+        "promotion fee"
+      ],
+      "join_keys": [],
+      "screenshot_folder": "Sales Reports/Promo FEE Report",
+      "export_sample": null,
+      "notes": "Screenshot metadata present; export sample not provided yet."
+    },
+    {
+      "id": "finance_report",
+      "name": "Finance Report",
+      "tab": "Sales Reports",
+      "url_path": "FinanceReport_Custom.fwx",
+      "source_type": "grid_or_export",
+      "filters": [
+        {
+          "name": "Market ID",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Region",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Store",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Report Range",
+          "control_type": "date_range",
+          "required": false,
+          "notes": ""
+        }
+      ],
+      "controls": [
+        "Generate",
+        "Raw Excel"
+      ],
+      "columns": [
+        {
+          "name": "Market",
+          "meaning": "Export column named Market; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "StoreID",
+          "meaning": "Store identifier in custom export.",
+          "data_type": "text",
+          "semantic_tags": [
+            "store",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "Store Name",
+          "meaning": "Store display name in custom export.",
+          "data_type": "text",
+          "semantic_tags": [
+            "store",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "Emp ID",
+          "meaning": "Employee/user ID.",
+          "data_type": "text",
+          "semantic_tags": [
+            "employee",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "Invoice #",
+          "meaning": "Invoice number.",
+          "data_type": "text",
+          "semantic_tags": [
+            "invoice",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "Invoice Date",
+          "meaning": "Invoice date.",
+          "data_type": "date",
+          "semantic_tags": [
+            "date"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "Application No",
+          "meaning": "Finance application number.",
+          "data_type": "text",
+          "semantic_tags": [
+            "finance"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "Finance Company",
+          "meaning": "Finance provider.",
+          "data_type": "text",
+          "semantic_tags": [
+            "finance"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "Invoice Amount",
+          "meaning": "Total invoice amount.",
+          "data_type": "currency",
+          "semantic_tags": [
+            "invoice",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "Approved Amount",
+          "meaning": "Finance application approved amount.",
+          "data_type": "currency",
+          "semantic_tags": [
+            "finance",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "Financed Amount",
+          "meaning": "Financed portion of invoice amount.",
+          "data_type": "currency",
+          "semantic_tags": [
+            "finance",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "Non-Financed Amount",
+          "meaning": "Non-financed portion of invoice amount.",
+          "data_type": "currency",
+          "semantic_tags": [
+            "finance",
+            "metric"
+          ],
+          "source": "export"
+        }
+      ],
+      "aliases": [
+        "finance custom",
+        "financed amount",
+        "applications"
+      ],
+      "join_keys": [
+        "StoreID",
+        "Store Name",
+        "Emp ID",
+        "Invoice #"
+      ],
+      "screenshot_folder": "Sales Reports/Finance Report",
+      "export_sample": "Purely Wireless Data/Purely Wireless Data/Sales Reports/Finance Custom Report.xlsx",
+      "notes": "Columns recovered from provided export."
+    },
+    {
+      "id": "bill_payment_listing",
+      "name": "Bill Payment Listing (Excel)",
+      "tab": "Sales Reports",
+      "url_path": "BillPaymentListing.fwx",
+      "source_type": "export",
+      "filters": [
+        {
+          "name": "Market ID",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Region",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Store",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Report Range",
+          "control_type": "date_range",
+          "required": false,
+          "notes": ""
+        }
+      ],
+      "controls": [
+        "Generate",
+        "Raw Excel"
+      ],
+      "columns": [
+        {
+          "name": "marketid",
+          "meaning": "Market identifier used by RT BDI filters and exports.",
+          "data_type": "text",
+          "semantic_tags": [
+            "market",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "custno",
+          "meaning": "Store/customer number.",
+          "data_type": "text",
+          "semantic_tags": [
+            "store",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "company",
+          "meaning": "Store or company display name.",
+          "data_type": "text",
+          "semantic_tags": [
+            "store",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "prodline",
+          "meaning": "Export column named prodline; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "category",
+          "meaning": "Export column named category; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "username",
+          "meaning": "Employee/user ID.",
+          "data_type": "text",
+          "semantic_tags": [
+            "employee",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "invno",
+          "meaning": "Export column named invno; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "adddate",
+          "meaning": "Date/time the record was added.",
+          "data_type": "date",
+          "semantic_tags": [
+            "date"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "item",
+          "meaning": "Item/SKU number.",
+          "data_type": "text",
+          "semantic_tags": [
+            "item",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "itmdesc",
+          "meaning": "Item description.",
+          "data_type": "text",
+          "semantic_tags": [
+            "item"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "qty",
+          "meaning": "Quantity.",
+          "data_type": "number",
+          "semantic_tags": [
+            "quantity",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "price",
+          "meaning": "Price amount.",
+          "data_type": "currency",
+          "semantic_tags": [
+            "price",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "cost",
+          "meaning": "Cost amount.",
+          "data_type": "currency",
+          "semantic_tags": [
+            "cost",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "profit",
+          "meaning": "Profit amount.",
+          "data_type": "currency",
+          "semantic_tags": [
+            "profit",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "pptax",
+          "meaning": "Export column named pptax; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "taxamount",
+          "meaning": "Export column named taxamount; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "total",
+          "meaning": "Total amount.",
+          "data_type": "currency",
+          "semantic_tags": [
+            "metric"
+          ],
+          "source": "export"
+        }
+      ],
+      "aliases": [
+        "bill payment",
+        "payment listing",
+        "excel bill payment"
+      ],
+      "join_keys": [
+        "marketid",
+        "custno",
+        "company",
+        "username",
+        "invno"
+      ],
+      "screenshot_folder": "Sales Reports/Bill Payment Listing (Excel)",
+      "export_sample": "Screenshots/Sales Reports/Bill Payment Listing (Excel)/SalesDetail__7HO0BJIWW.csv",
+      "notes": "Brief identifies this as export-only; CSV sample was inside the screenshots ZIP."
+    },
+    {
+      "id": "profit_loss_report",
+      "name": "Profit Loss Report",
+      "tab": "Sales Reports",
+      "url_path": "ProfitLossReport.fwx",
+      "source_type": "export",
+      "filters": [
+        {
+          "name": "Market ID",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Region",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Store",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Report Range",
+          "control_type": "date_range",
+          "required": false,
+          "notes": ""
+        }
+      ],
+      "controls": [
+        "Generate",
+        "Raw Excel"
+      ],
+      "columns": [],
+      "aliases": [
+        "profit loss",
+        "p&l",
+        "pnl"
+      ],
+      "join_keys": [],
+      "screenshot_folder": "Sales Reports/Profit Loss Report",
+      "export_sample": null,
+      "notes": "Brief identifies this as export-only; export sample was not included."
+    },
+    {
+      "id": "employee_conversion_ratio",
+      "name": "Employee Conversion Ratio",
+      "tab": "Employee Report",
+      "url_path": "ConversionRatioReport_EmpNew.fwx",
+      "source_type": "grid_or_export",
+      "filters": [
+        {
+          "name": "Market ID",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Region",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "State",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "StoreType",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Store",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Report Range",
+          "control_type": "date_range",
+          "required": false,
+          "notes": ""
+        }
+      ],
+      "controls": [
+        "Generate",
+        "Raw Excel"
+      ],
+      "columns": [
+        {
+          "name": "marketid",
+          "meaning": "Market identifier used by RT BDI filters and exports.",
+          "data_type": "text",
+          "semantic_tags": [
+            "market",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "custno",
+          "meaning": "Store/customer number.",
+          "data_type": "text",
+          "semantic_tags": [
+            "store",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "company",
+          "meaning": "Store or company display name.",
+          "data_type": "text",
+          "semantic_tags": [
+            "store",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "username",
+          "meaning": "Employee/user ID.",
+          "data_type": "text",
+          "semantic_tags": [
+            "employee",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "name",
+          "meaning": "Employee name.",
+          "data_type": "text",
+          "semantic_tags": [
+            "employee",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "lastname",
+          "meaning": "Employee last name.",
+          "data_type": "text",
+          "semantic_tags": [
+            "employee"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "totact",
+          "meaning": "Total activations/boxes for the report period.",
+          "data_type": "number",
+          "semantic_tags": [
+            "activation",
+            "boxes",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "totqty",
+          "meaning": "Total service payment quantity used in conversion ratio.",
+          "data_type": "number",
+          "semantic_tags": [
+            "payment",
+            "conversion",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "ratio",
+          "meaning": "Conversion ratio: activations divided by total service payments.",
+          "data_type": "percent",
+          "semantic_tags": [
+            "conversion",
+            "metric"
+          ],
+          "source": "export"
+        }
+      ],
+      "aliases": [
+        "conversion ratio",
+        "dealer conversion"
+      ],
+      "join_keys": [
+        "marketid",
+        "custno",
+        "company",
+        "username",
+        "name"
+      ],
+      "screenshot_folder": "EMPLOYEE REPORT/Employee Conversion Ratio",
+      "export_sample": "Purely Wireless Data/Purely Wireless Data/Employee Reports/ConversionRatio.CSV",
+      "notes": "Columns recovered from provided export."
+    },
+    {
+      "id": "employee_mrc_matrix_report",
+      "name": "Employee MRC Matrix Report",
+      "tab": "Employee Report",
+      "url_path": "Employee_MRC_Matrix.fwx",
+      "source_type": "grid_or_export",
+      "filters": [
+        {
+          "name": "Market ID",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Region",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "State",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "StoreType",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Store",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Report Range",
+          "control_type": "date_range",
+          "required": false,
+          "notes": ""
+        }
+      ],
+      "controls": [
+        "Generate",
+        "Raw Excel"
+      ],
+      "columns": [
+        {
+          "name": "marketid",
+          "meaning": "Market identifier used by RT BDI filters and exports.",
+          "data_type": "text",
+          "semantic_tags": [
+            "market",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "username",
+          "meaning": "Employee/user ID.",
+          "data_type": "text",
+          "semantic_tags": [
+            "employee",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "name",
+          "meaning": "Employee name.",
+          "data_type": "text",
+          "semantic_tags": [
+            "employee",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "lastname",
+          "meaning": "Employee last name.",
+          "data_type": "text",
+          "semantic_tags": [
+            "employee"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "hours",
+          "meaning": "Employee hours worked.",
+          "data_type": "number",
+          "semantic_tags": [
+            "hours",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "totact",
+          "meaning": "Total activations/boxes for the report period.",
+          "data_type": "number",
+          "semantic_tags": [
+            "activation",
+            "boxes",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "plan25",
+          "meaning": "Export column named plan25; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "plan30",
+          "meaning": "Export column named plan30; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "plan40",
+          "meaning": "Export column named plan40; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "plan50",
+          "meaning": "Export column named plan50; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "flex70",
+          "meaning": "Export column named flex70; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "flex60",
+          "meaning": "Export column named flex60; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "flex50",
+          "meaning": "Export column named flex50; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "plan50aal",
+          "meaning": "Export column named plan50aal; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "plan60",
+          "meaning": "Export column named plan60; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "plan60aal",
+          "meaning": "Export column named plan60aal; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "upgrade",
+          "meaning": "Export column named upgrade; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "sor",
+          "meaning": "Export column named sor; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "nameid",
+          "meaning": "Employee/name identifier used by ranking reports.",
+          "data_type": "text",
+          "semantic_tags": [
+            "employee",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "php",
+          "meaning": "Export column named php; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "secure5",
+          "meaning": "Export column named secure5; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "secure10",
+          "meaning": "Export column named secure10; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "hotspot",
+          "meaning": "Export column named hotspot; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "watch",
+          "meaning": "Export column named watch; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "smartride",
+          "meaning": "Export column named smartride; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "pettracker",
+          "meaning": "Export column named pettracker; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "hint",
+          "meaning": "Export column named hint; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "tablet15",
+          "meaning": "Export column named tablet15; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "tablet20",
+          "meaning": "Export column named tablet20; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "tablet30",
+          "meaning": "Export column named tablet30; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "_2gpromo",
+          "meaning": "Export column named _2gpromo; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "vas",
+          "meaning": "Export column named vas; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "accessory",
+          "meaning": "Accessory sales revenue or count depending on report context.",
+          "data_type": "number",
+          "semantic_tags": [
+            "accessory",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "accessoryprofit",
+          "meaning": "Accessory gross profit.",
+          "data_type": "currency",
+          "semantic_tags": [
+            "accessory",
+            "profit",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "newreact",
+          "meaning": "New plus reactivation count.",
+          "data_type": "number",
+          "semantic_tags": [
+            "activation",
+            "reactivation",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "iot",
+          "meaning": "Export column named iot; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "freeline",
+          "meaning": "Export column named freeline; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "noniotmrc",
+          "meaning": "Export column named noniotmrc; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "basemrc",
+          "meaning": "Export column named basemrc; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        }
+      ],
+      "aliases": [
+        "mrc matrix",
+        "plan mix",
+        "rate plan mix"
+      ],
+      "join_keys": [
+        "marketid",
+        "username",
+        "name",
+        "nameid"
+      ],
+      "screenshot_folder": "EMPLOYEE REPORT/EMPLOYEE MRC MATRIX REPORT",
+      "export_sample": "Purely Wireless Data/Purely Wireless Data/Employee Reports/EmpMRC_Matrix.xls",
+      "notes": "Columns recovered from provided export."
+    },
+    {
+      "id": "activation_mrc_by_employee",
+      "name": "Employee APH+MRC Report",
+      "tab": "Employee Report",
+      "url_path": "BoxReportByEmp_pcsp.fwx",
+      "source_type": "grid_or_export",
+      "filters": [
+        {
+          "name": "Market ID",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Region",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "State",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "StoreType",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Store",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Report Range",
+          "control_type": "date_range",
+          "required": false,
+          "notes": ""
+        }
+      ],
+      "controls": [
+        "Generate",
+        "Raw Excel"
+      ],
+      "columns": [
+        {
+          "name": "marketid",
+          "meaning": "Market identifier used by RT BDI filters and exports.",
+          "data_type": "text",
+          "semantic_tags": [
+            "market",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "username",
+          "meaning": "Employee/user ID.",
+          "data_type": "text",
+          "semantic_tags": [
+            "employee",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "name",
+          "meaning": "Employee name.",
+          "data_type": "text",
+          "semantic_tags": [
+            "employee",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "plancode",
+          "meaning": "Rate plan code.",
+          "data_type": "text",
+          "semantic_tags": [
+            "plan"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "plandesc",
+          "meaning": "Rate plan description.",
+          "data_type": "text",
+          "semantic_tags": [
+            "plan"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "mrc",
+          "meaning": "Monthly recurring charge amount.",
+          "data_type": "currency",
+          "semantic_tags": [
+            "mrc",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "plancount",
+          "meaning": "Count of activations on the rate plan.",
+          "data_type": "number",
+          "semantic_tags": [
+            "plan",
+            "metric"
+          ],
+          "source": "export"
+        }
+      ],
+      "aliases": [
+        "activation mrc",
+        "aph mrc",
+        "mrc by employee"
+      ],
+      "join_keys": [
+        "marketid",
+        "username",
+        "name"
+      ],
+      "screenshot_folder": "EMPLOYEE REPORT/Employee APH+MRC Report",
+      "export_sample": "Purely Wireless Data/Purely Wireless Data/Employee Reports/ActivationMRC_Emp_7HO08C622.xls",
+      "notes": "Columns recovered from provided export."
+    },
+    {
+      "id": "employee_mrc_summary",
+      "name": "Employee MRC Summary",
+      "tab": "Employee Report",
+      "url_path": "ActivationReport_MRC_Emp.fwx",
+      "source_type": "grid",
+      "filters": [
+        {
+          "name": "Market ID",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Region",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "State",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "StoreType",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Store",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Report Range",
+          "control_type": "date_range",
+          "required": false,
+          "notes": ""
+        }
+      ],
+      "controls": [
+        "Generate",
+        "Raw Excel"
+      ],
+      "columns": [],
+      "aliases": [
+        "mrc summary"
+      ],
+      "join_keys": [],
+      "screenshot_folder": "EMPLOYEE REPORT/Employee MRC Summary",
+      "export_sample": null,
+      "notes": "Screenshot metadata present; export sample not provided yet."
+    },
+    {
+      "id": "employee_performance_report",
+      "name": "Employee Performance Report",
+      "tab": "Employee Report",
+      "url_path": "emp_performance.fwx",
+      "source_type": "grid_or_export",
+      "filters": [
+        {
+          "name": "Market ID",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Region",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "State",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "StoreType",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Store",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Report Range",
+          "control_type": "date_range",
+          "required": false,
+          "notes": ""
+        }
+      ],
+      "controls": [
+        "Generate",
+        "Raw Excel"
+      ],
+      "columns": [
+        {
+          "name": "marketid",
+          "meaning": "Market identifier used by RT BDI filters and exports.",
+          "data_type": "text",
+          "semantic_tags": [
+            "market",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "custno",
+          "meaning": "Store/customer number.",
+          "data_type": "text",
+          "semantic_tags": [
+            "store",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "company",
+          "meaning": "Store or company display name.",
+          "data_type": "text",
+          "semantic_tags": [
+            "store",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "username",
+          "meaning": "Employee/user ID.",
+          "data_type": "text",
+          "semantic_tags": [
+            "employee",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "name",
+          "meaning": "Employee name.",
+          "data_type": "text",
+          "semantic_tags": [
+            "employee",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "taxrate",
+          "meaning": "Export column named taxrate; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "boxes",
+          "meaning": "Export column named boxes; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "newact",
+          "meaning": "New activation count.",
+          "data_type": "number",
+          "semantic_tags": [
+            "activation",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "upgsor",
+          "meaning": "Upgrade or SOR activation count.",
+          "data_type": "number",
+          "semantic_tags": [
+            "upgrade",
+            "sor",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "reactact",
+          "meaning": "Reactivation count.",
+          "data_type": "number",
+          "semantic_tags": [
+            "reactivation",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "newreactact",
+          "meaning": "New plus reactivation count.",
+          "data_type": "number",
+          "semantic_tags": [
+            "activation",
+            "reactivation",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "totact",
+          "meaning": "Total activations/boxes for the report period.",
+          "data_type": "number",
+          "semantic_tags": [
+            "activation",
+            "boxes",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "totaccessory",
+          "meaning": "Accessory sales revenue.",
+          "data_type": "currency",
+          "semantic_tags": [
+            "accessory",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "totaccessoryqty",
+          "meaning": "Accessory quantity sold.",
+          "data_type": "number",
+          "semantic_tags": [
+            "accessory",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "totaccessorycost",
+          "meaning": "Accessory cost.",
+          "data_type": "currency",
+          "semantic_tags": [
+            "accessory",
+            "cost",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "totpaymentqty",
+          "meaning": "Total payment transaction quantity.",
+          "data_type": "number",
+          "semantic_tags": [
+            "payment",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "totpayment",
+          "meaning": "Total payment dollars.",
+          "data_type": "currency",
+          "semantic_tags": [
+            "payment",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "hoursworked",
+          "meaning": "Employee hours worked.",
+          "data_type": "number",
+          "semantic_tags": [
+            "hours",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "boxperhour",
+          "meaning": "Boxes/activations per hour.",
+          "data_type": "number",
+          "semantic_tags": [
+            "productivity",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "aph",
+          "meaning": "Accessory per hour metric.",
+          "data_type": "number",
+          "semantic_tags": [
+            "accessory",
+            "productivity",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "acccom",
+          "meaning": "Export column named acccom; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "mrc60",
+          "meaning": "Export column named mrc60; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "mls",
+          "meaning": "Export column named mls; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "avgmrc",
+          "meaning": "Average monthly recurring charge.",
+          "data_type": "currency",
+          "semantic_tags": [
+            "mrc",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "totmrcamount",
+          "meaning": "Total MRC amount.",
+          "data_type": "currency",
+          "semantic_tags": [
+            "mrc",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "iot",
+          "meaning": "Export column named iot; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "freeline",
+          "meaning": "Export column named freeline; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "secure5",
+          "meaning": "Export column named secure5; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "secure10",
+          "meaning": "Export column named secure10; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "tablet",
+          "meaning": "Export column named tablet; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "timex",
+          "meaning": "Export column named timex; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "hint",
+          "meaning": "Export column named hint; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "dsi",
+          "meaning": "Export column named dsi; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "pettracker",
+          "meaning": "Export column named pettracker; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "chromebook",
+          "meaning": "Export column named chromebook; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "nameid",
+          "meaning": "Employee/name identifier used by ranking reports.",
+          "data_type": "text",
+          "semantic_tags": [
+            "employee",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "php",
+          "meaning": "Export column named php; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "linkzone",
+          "meaning": "Export column named linkzone; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "smartride",
+          "meaning": "Export column named smartride; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "featuremrc",
+          "meaning": "Export column named featuremrc; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        }
+      ],
+      "aliases": [
+        "employee performance",
+        "accessories",
+        "aph"
+      ],
+      "join_keys": [
+        "marketid",
+        "custno",
+        "company",
+        "username",
+        "name",
+        "nameid"
+      ],
+      "screenshot_folder": "EMPLOYEE REPORT/Employee Performance Report",
+      "export_sample": "Purely Wireless Data/Purely Wireless Data/Employee Reports/EmployeePerformance_report.xls",
+      "notes": "Columns recovered from provided export."
+    },
+    {
+      "id": "employee_performance_stack_rank",
+      "name": "Employee Performance Stack Rank",
+      "tab": "Employee Report",
+      "url_path": "EMP_StackRank.fwx",
+      "source_type": "grid_or_export",
+      "filters": [
+        {
+          "name": "Market ID",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Region",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "State",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "StoreType",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Store",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Report Range",
+          "control_type": "date_range",
+          "required": false,
+          "notes": ""
+        }
+      ],
+      "controls": [
+        "Generate",
+        "Raw Excel"
+      ],
+      "columns": [
+        {
+          "name": "username",
+          "meaning": "Employee/user ID.",
+          "data_type": "text",
+          "semantic_tags": [
+            "employee",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "name",
+          "meaning": "Employee name.",
+          "data_type": "text",
+          "semantic_tags": [
+            "employee",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "newactinv",
+          "meaning": "New activation count sourced from invoices.",
+          "data_type": "number",
+          "semantic_tags": [
+            "activation",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "newact",
+          "meaning": "New activation count.",
+          "data_type": "number",
+          "semantic_tags": [
+            "activation",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "upgsor",
+          "meaning": "Upgrade or SOR activation count.",
+          "data_type": "number",
+          "semantic_tags": [
+            "upgrade",
+            "sor",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "upginv",
+          "meaning": "Upgrade invoice count.",
+          "data_type": "number",
+          "semantic_tags": [
+            "upgrade",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "reactact",
+          "meaning": "Reactivation count.",
+          "data_type": "number",
+          "semantic_tags": [
+            "reactivation",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "newreactact",
+          "meaning": "New plus reactivation count.",
+          "data_type": "number",
+          "semantic_tags": [
+            "activation",
+            "reactivation",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "totact",
+          "meaning": "Total activations/boxes for the report period.",
+          "data_type": "number",
+          "semantic_tags": [
+            "activation",
+            "boxes",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "totaccessory",
+          "meaning": "Accessory sales revenue.",
+          "data_type": "currency",
+          "semantic_tags": [
+            "accessory",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "totaccessoryqty",
+          "meaning": "Accessory quantity sold.",
+          "data_type": "number",
+          "semantic_tags": [
+            "accessory",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "totaccessorycost",
+          "meaning": "Accessory cost.",
+          "data_type": "currency",
+          "semantic_tags": [
+            "accessory",
+            "cost",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "totpaymentqty",
+          "meaning": "Total payment transaction quantity.",
+          "data_type": "number",
+          "semantic_tags": [
+            "payment",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "totpayment",
+          "meaning": "Total payment dollars.",
+          "data_type": "currency",
+          "semantic_tags": [
+            "payment",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "totaccessoryprofit",
+          "meaning": "Accessory gross profit.",
+          "data_type": "currency",
+          "semantic_tags": [
+            "accessory",
+            "profit",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "trueboxes",
+          "meaning": "Export column named trueboxes; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "hoursworked",
+          "meaning": "Employee hours worked.",
+          "data_type": "number",
+          "semantic_tags": [
+            "hours",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "boxperhour",
+          "meaning": "Boxes/activations per hour.",
+          "data_type": "number",
+          "semantic_tags": [
+            "productivity",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "aph",
+          "meaning": "Accessory per hour metric.",
+          "data_type": "number",
+          "semantic_tags": [
+            "accessory",
+            "productivity",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "acccom",
+          "meaning": "Export column named acccom; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "accperhour",
+          "meaning": "Accessory sales per hour.",
+          "data_type": "number",
+          "semantic_tags": [
+            "accessory",
+            "productivity",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "mrc60",
+          "meaning": "Export column named mrc60; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "mrc60takerate",
+          "meaning": "Export column named mrc60takerate; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "mls",
+          "meaning": "Export column named mls; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "secure5",
+          "meaning": "Export column named secure5; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "secure10",
+          "meaning": "Export column named secure10; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "cmgr",
+          "meaning": "Export column named cmgr; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "freeline",
+          "meaning": "Export column named freeline; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "_2gpromo",
+          "meaning": "Export column named _2gpromo; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "autopay",
+          "meaning": "Export column named autopay; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "aal",
+          "meaning": "Export column named aal; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "avgmrc",
+          "meaning": "Average monthly recurring charge.",
+          "data_type": "currency",
+          "semantic_tags": [
+            "mrc",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "totmrcamount",
+          "meaning": "Total MRC amount.",
+          "data_type": "currency",
+          "semantic_tags": [
+            "mrc",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "nameid",
+          "meaning": "Employee/name identifier used by ranking reports.",
+          "data_type": "text",
+          "semantic_tags": [
+            "employee",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "tablet",
+          "meaning": "Export column named tablet; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "php",
+          "meaning": "Export column named php; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "linkzone",
+          "meaning": "Export column named linkzone; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "smartride",
+          "meaning": "Export column named smartride; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "financedcount",
+          "meaning": "Number of financed transactions.",
+          "data_type": "number",
+          "semantic_tags": [
+            "finance",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "featuremrc",
+          "meaning": "Export column named featuremrc; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "timex",
+          "meaning": "Export column named timex; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "pettracker",
+          "meaning": "Export column named pettracker; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "chromebook",
+          "meaning": "Export column named chromebook; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "iot",
+          "meaning": "Export column named iot; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "hint",
+          "meaning": "Export column named hint; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "watch",
+          "meaning": "Export column named watch; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "phppro",
+          "meaning": "Export column named phppro; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "psb",
+          "meaning": "Export column named psb; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "ticount",
+          "meaning": "Export column named ticount; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "agp",
+          "meaning": "Export column named agp; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        }
+      ],
+      "aliases": [
+        "stack rank",
+        "performance ranking"
+      ],
+      "join_keys": [
+        "username",
+        "name",
+        "nameid"
+      ],
+      "screenshot_folder": "EMPLOYEE REPORT/Employee Performance Stack Rank",
+      "export_sample": "Purely Wireless Data/Purely Wireless Data/Employee Reports/EmployeePerformance_report_7HO088J31.xls",
+      "notes": "Columns recovered from provided export."
+    },
+    {
+      "id": "employee_ranking_by_box_sales",
+      "name": "Employee Ranking By Box Sales",
+      "tab": "Employee Report",
+      "url_path": "EmpRankingMark.fwx",
+      "source_type": "grid_or_export",
+      "filters": [
+        {
+          "name": "Market ID",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Region",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "State",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "StoreType",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Store",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Report Range",
+          "control_type": "date_range",
+          "required": false,
+          "notes": ""
+        }
+      ],
+      "controls": [
+        "Generate",
+        "Raw Excel"
+      ],
+      "columns": [
+        {
+          "name": "username",
+          "meaning": "Employee/user ID.",
+          "data_type": "text",
+          "semantic_tags": [
+            "employee",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "name",
+          "meaning": "Employee name.",
+          "data_type": "text",
+          "semantic_tags": [
+            "employee",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "newact",
+          "meaning": "New activation count.",
+          "data_type": "number",
+          "semantic_tags": [
+            "activation",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "upgact",
+          "meaning": "Upgrade activation count.",
+          "data_type": "number",
+          "semantic_tags": [
+            "upgrade",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "preact",
+          "meaning": "Export column named preact; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "soract",
+          "meaning": "SOR activation count.",
+          "data_type": "number",
+          "semantic_tags": [
+            "sor",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "addact",
+          "meaning": "Export column named addact; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "reaact",
+          "meaning": "Export column named reaact; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "totact",
+          "meaning": "Total activations/boxes for the report period.",
+          "data_type": "number",
+          "semantic_tags": [
+            "activation",
+            "boxes",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "totaccessory",
+          "meaning": "Accessory sales revenue.",
+          "data_type": "currency",
+          "semantic_tags": [
+            "accessory",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "totaccessorycost",
+          "meaning": "Accessory cost.",
+          "data_type": "currency",
+          "semantic_tags": [
+            "accessory",
+            "cost",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "totpaymentqty",
+          "meaning": "Total payment transaction quantity.",
+          "data_type": "number",
+          "semantic_tags": [
+            "payment",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "totaccessoryprofit",
+          "meaning": "Accessory gross profit.",
+          "data_type": "currency",
+          "semantic_tags": [
+            "accessory",
+            "profit",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "truenewact",
+          "meaning": "Export column named truenewact; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "inscount",
+          "meaning": "Export column named inscount; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "secure5",
+          "meaning": "Export column named secure5; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "secure10",
+          "meaning": "Export column named secure10; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "nameid",
+          "meaning": "Employee/name identifier used by ranking reports.",
+          "data_type": "text",
+          "semantic_tags": [
+            "employee",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "invoicecount",
+          "meaning": "Export column named invoicecount; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "financecount",
+          "meaning": "Export column named financecount; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "freeline",
+          "meaning": "Export column named freeline; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "avgmrc",
+          "meaning": "Average monthly recurring charge.",
+          "data_type": "currency",
+          "semantic_tags": [
+            "mrc",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "iot",
+          "meaning": "Export column named iot; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "hint",
+          "meaning": "Export column named hint; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "hoursworked",
+          "meaning": "Employee hours worked.",
+          "data_type": "number",
+          "semantic_tags": [
+            "hours",
+            "metric"
+          ],
+          "source": "export"
+        }
+      ],
+      "aliases": [
+        "box sales ranking",
+        "top seller",
+        "phones",
+        "boxes",
+        "activations"
+      ],
+      "join_keys": [
+        "username",
+        "name",
+        "nameid"
+      ],
+      "screenshot_folder": "EMPLOYEE REPORT/Employee Ranking By Box Sales",
+      "export_sample": "Purely Wireless Data/Purely Wireless Data/Employee Reports/BoxSalesRanking.XLS",
+      "notes": "Columns recovered from provided export."
+    },
+    {
+      "id": "box_report_by_employee",
+      "name": "Box Report By Employee",
+      "tab": "Employee Report",
+      "url_path": "BoxReportByEmp.fwx",
+      "source_type": "grid_or_export",
+      "filters": [
+        {
+          "name": "Market ID",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Region",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "State",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "StoreType",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Store",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Report Range",
+          "control_type": "date_range",
+          "required": false,
+          "notes": ""
+        }
+      ],
+      "controls": [
+        "Generate",
+        "Raw Excel"
+      ],
+      "columns": [
+        {
+          "name": "marketid",
+          "meaning": "Market identifier used by RT BDI filters and exports.",
+          "data_type": "text",
+          "semantic_tags": [
+            "market",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "custno",
+          "meaning": "Store/customer number.",
+          "data_type": "text",
+          "semantic_tags": [
+            "store",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "company",
+          "meaning": "Store or company display name.",
+          "data_type": "text",
+          "semantic_tags": [
+            "store",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "address",
+          "meaning": "Export column named address; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "citystatezip",
+          "meaning": "Export column named citystatezip; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "fk_ezposusers",
+          "meaning": "Internal employee user key.",
+          "data_type": "text",
+          "semantic_tags": [
+            "employee",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "username",
+          "meaning": "Employee/user ID.",
+          "data_type": "text",
+          "semantic_tags": [
+            "employee",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "name",
+          "meaning": "Employee name.",
+          "data_type": "text",
+          "semantic_tags": [
+            "employee",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "accessoryqty",
+          "meaning": "Accessory quantity sold.",
+          "data_type": "number",
+          "semantic_tags": [
+            "accessory",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "simqty",
+          "meaning": "Export column named simqty; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "invphoneqty",
+          "meaning": "Export column named invphoneqty; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "newcount",
+          "meaning": "New activation count.",
+          "data_type": "number",
+          "semantic_tags": [
+            "activation",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "upgradecount",
+          "meaning": "Upgrade activation count.",
+          "data_type": "number",
+          "semantic_tags": [
+            "upgrade",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "reactivationcount",
+          "meaning": "Reactivation count.",
+          "data_type": "number",
+          "semantic_tags": [
+            "reactivation",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "sorcount",
+          "meaning": "SOR count.",
+          "data_type": "number",
+          "semantic_tags": [
+            "sor",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "paymentqty",
+          "meaning": "Payment transaction quantity.",
+          "data_type": "number",
+          "semantic_tags": [
+            "payment",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "basicphoneqty",
+          "meaning": "Export column named basicphoneqty; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "mrc50plus",
+          "meaning": "Export column named mrc50plus; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "totmrc",
+          "meaning": "Total monthly recurring charge.",
+          "data_type": "currency",
+          "semantic_tags": [
+            "mrc",
+            "metric"
+          ],
+          "source": "export"
+        }
+      ],
+      "aliases": [
+        "box by employee",
+        "boxes by employee"
+      ],
+      "join_keys": [
+        "marketid",
+        "custno",
+        "company",
+        "username",
+        "name"
+      ],
+      "screenshot_folder": "EMPLOYEE REPORT/Box Report By Employee",
+      "export_sample": "Purely Wireless Data/Purely Wireless Data/Employee Reports/BoxReportByEmp_7HO0894SD.xls",
+      "notes": "Columns recovered from provided export."
+    },
+    {
+      "id": "kpi_report_by_employee",
+      "name": "KPI Report By Employee",
+      "tab": "Employee Report",
+      "url_path": "KPIReportByEmp.fwx",
+      "source_type": "grid_or_export",
+      "filters": [
+        {
+          "name": "Market ID",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Region",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "State",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "StoreType",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Store",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Report Range",
+          "control_type": "date_range",
+          "required": false,
+          "notes": ""
+        }
+      ],
+      "controls": [
+        "Generate",
+        "Raw Excel"
+      ],
+      "columns": [
+        {
+          "name": "marketid",
+          "meaning": "Market identifier used by RT BDI filters and exports.",
+          "data_type": "text",
+          "semantic_tags": [
+            "market",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "custno",
+          "meaning": "Store/customer number.",
+          "data_type": "text",
+          "semantic_tags": [
+            "store",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "company",
+          "meaning": "Store or company display name.",
+          "data_type": "text",
+          "semantic_tags": [
+            "store",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "fk_store",
+          "meaning": "Internal store foreign key.",
+          "data_type": "text",
+          "semantic_tags": [
+            "store",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "fk_ezposusers",
+          "meaning": "Internal employee user key.",
+          "data_type": "text",
+          "semantic_tags": [
+            "employee",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "username",
+          "meaning": "Employee/user ID.",
+          "data_type": "text",
+          "semantic_tags": [
+            "employee",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "name",
+          "meaning": "Employee name.",
+          "data_type": "text",
+          "semantic_tags": [
+            "employee",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "new_aal_count",
+          "meaning": "Export column named new_aal_count; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "react_count",
+          "meaning": "Reactivation count.",
+          "data_type": "number",
+          "semantic_tags": [
+            "reactivation",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "upgrade_count",
+          "meaning": "Export column named upgrade_count; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "accessoryrev",
+          "meaning": "Accessory revenue.",
+          "data_type": "currency",
+          "semantic_tags": [
+            "accessory",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "accessorycost",
+          "meaning": "Accessory cost.",
+          "data_type": "currency",
+          "semantic_tags": [
+            "accessory",
+            "cost",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "accessoryqty",
+          "meaning": "Accessory quantity sold.",
+          "data_type": "number",
+          "semantic_tags": [
+            "accessory",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "paymentqty",
+          "meaning": "Payment transaction quantity.",
+          "data_type": "number",
+          "semantic_tags": [
+            "payment",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "paymentrev",
+          "meaning": "Payment revenue.",
+          "data_type": "currency",
+          "semantic_tags": [
+            "payment",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "grossprofit",
+          "meaning": "Gross profit.",
+          "data_type": "currency",
+          "semantic_tags": [
+            "profit",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "mrc_rev",
+          "meaning": "Export column named mrc_rev; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "feature_rev",
+          "meaning": "Export column named feature_rev; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "mrc_count",
+          "meaning": "Export column named mrc_count; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "feature_count",
+          "meaning": "Export column named feature_count; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "iot",
+          "meaning": "Export column named iot; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "freeline",
+          "meaning": "Export column named freeline; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "totmrcrev",
+          "meaning": "Export column named totmrcrev; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "hoursworked",
+          "meaning": "Employee hours worked.",
+          "data_type": "number",
+          "semantic_tags": [
+            "hours",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "expcom",
+          "meaning": "Export column named expcom; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        }
+      ],
+      "aliases": [
+        "kpi by employee",
+        "gross profit",
+        "gp"
+      ],
+      "join_keys": [
+        "marketid",
+        "custno",
+        "company",
+        "fk_store",
+        "fk_ezposusers",
+        "username",
+        "name"
+      ],
+      "screenshot_folder": "EMPLOYEE REPORT/KPI Report By Employee",
+      "export_sample": "Purely Wireless Data/Purely Wireless Data/Employee Reports/KPIByEmp_7HO08BBIC.xls",
+      "notes": "Columns recovered from provided export."
+    },
+    {
+      "id": "employee_ranking_by_finance",
+      "name": "Employee Ranking By Finance",
+      "tab": "Employee Report",
+      "url_path": "EmpRanking_Finance.fwx",
+      "source_type": "grid_or_export",
+      "filters": [
+        {
+          "name": "Market ID",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Region",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "State",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "StoreType",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Store",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Report Range",
+          "control_type": "date_range",
+          "required": false,
+          "notes": ""
+        }
+      ],
+      "controls": [
+        "Generate",
+        "Raw Excel"
+      ],
+      "columns": [
+        {
+          "name": "marketid",
+          "meaning": "Market identifier used by RT BDI filters and exports.",
+          "data_type": "text",
+          "semantic_tags": [
+            "market",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "custno",
+          "meaning": "Store/customer number.",
+          "data_type": "text",
+          "semantic_tags": [
+            "store",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "company",
+          "meaning": "Store or company display name.",
+          "data_type": "text",
+          "semantic_tags": [
+            "store",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "username",
+          "meaning": "Employee/user ID.",
+          "data_type": "text",
+          "semantic_tags": [
+            "employee",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "name",
+          "meaning": "Employee name.",
+          "data_type": "text",
+          "semantic_tags": [
+            "employee",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "financedcount",
+          "meaning": "Number of financed transactions.",
+          "data_type": "number",
+          "semantic_tags": [
+            "finance",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "financedpaid",
+          "meaning": "Amount paid/financed in finance ranking export.",
+          "data_type": "currency",
+          "semantic_tags": [
+            "finance",
+            "metric"
+          ],
+          "source": "export"
+        }
+      ],
+      "aliases": [
+        "finance ranking",
+        "financed count"
+      ],
+      "join_keys": [
+        "marketid",
+        "custno",
+        "company",
+        "username",
+        "name"
+      ],
+      "screenshot_folder": "EMPLOYEE REPORT/Employee Ranking By Finance",
+      "export_sample": "Purely Wireless Data/Purely Wireless Data/Employee Reports/curEmpRankingFinance_7HO08EBKP.CSV",
+      "notes": "Columns recovered from provided export."
+    },
+    {
+      "id": "employee_schedule",
+      "name": "Employee Schedule",
+      "tab": "Employee Report",
+      "url_path": null,
+      "source_type": "grid",
+      "filters": [
+        {
+          "name": "Market ID",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Region",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "State",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "StoreType",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Store",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Report Range",
+          "control_type": "date_range",
+          "required": false,
+          "notes": ""
+        }
+      ],
+      "controls": [
+        "Generate",
+        "Raw Excel"
+      ],
+      "columns": [],
+      "aliases": [
+        "schedule",
+        "employee schedule"
+      ],
+      "join_keys": [],
+      "screenshot_folder": "EMPLOYEE REPORT/Employee Schedule",
+      "export_sample": null,
+      "notes": "Screenshot metadata present; export sample not provided yet."
+    },
+    {
+      "id": "scheduled_vs_clockin",
+      "name": "Scheduled vs. ClockIn",
+      "tab": "Employee Report",
+      "url_path": null,
+      "source_type": "grid",
+      "filters": [
+        {
+          "name": "Market ID",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Region",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "State",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "StoreType",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Store",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Report Range",
+          "control_type": "date_range",
+          "required": false,
+          "notes": ""
+        }
+      ],
+      "controls": [
+        "Generate",
+        "Raw Excel"
+      ],
+      "columns": [],
+      "aliases": [
+        "clock in",
+        "scheduled vs clockin",
+        "attendance"
+      ],
+      "join_keys": [],
+      "screenshot_folder": "EMPLOYEE REPORT/Scheduled vs. ClockIn",
+      "export_sample": null,
+      "notes": "Screenshot metadata present; export sample not provided yet."
+    },
+    {
+      "id": "serial_number_tracking",
+      "name": "Serial Number Tracking",
+      "tab": "Inventory Report",
+      "url_path": "SerialNumberTracking.fwx",
+      "source_type": "grid",
+      "filters": [
+        {
+          "name": "Market ID",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "State",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "StoreType",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Store",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Created Since",
+          "control_type": "single_date",
+          "required": false,
+          "notes": ""
+        }
+      ],
+      "controls": [
+        "Generate",
+        "Raw Excel"
+      ],
+      "columns": [],
+      "aliases": [
+        "serial tracking",
+        "imei tracking"
+      ],
+      "join_keys": [
+        "serial",
+        "item"
+      ],
+      "screenshot_folder": "Inventory Report/Serial Number Tracking",
+      "export_sample": null,
+      "notes": "Screenshot metadata present; export sample not provided yet."
+    },
+    {
+      "id": "inventory_report",
+      "name": "Inventory Report",
+      "tab": "Inventory Report",
+      "url_path": "InventoryReport_Custom.fwx",
+      "source_type": "grid_or_export",
+      "filters": [
+        {
+          "name": "Market ID",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "State",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "StoreType",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Store",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Created Since",
+          "control_type": "single_date",
+          "required": false,
+          "notes": ""
+        }
+      ],
+      "controls": [
+        "Generate",
+        "Raw Excel"
+      ],
+      "columns": [
+        {
+          "name": "custno",
+          "meaning": "Store/customer number.",
+          "data_type": "text",
+          "semantic_tags": [
+            "store",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "company",
+          "meaning": "Store or company display name.",
+          "data_type": "text",
+          "semantic_tags": [
+            "store",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "marketid",
+          "meaning": "Market identifier used by RT BDI filters and exports.",
+          "data_type": "text",
+          "semantic_tags": [
+            "market",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "region",
+          "meaning": "Region grouping.",
+          "data_type": "text",
+          "semantic_tags": [
+            "region"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "idoo",
+          "meaning": "Export column named idoo; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "item",
+          "meaning": "Item/SKU number.",
+          "data_type": "text",
+          "semantic_tags": [
+            "item",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "manufacturer",
+          "meaning": "Export column named manufacturer; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "color",
+          "meaning": "Export column named color; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "prodline",
+          "meaning": "Export column named prodline; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "category",
+          "meaning": "Export column named category; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "subclass",
+          "meaning": "Export column named subclass; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "itmdesc",
+          "meaning": "Item description.",
+          "data_type": "text",
+          "semantic_tags": [
+            "item"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "minprice",
+          "meaning": "Export column named minprice; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "serialized",
+          "meaning": "Export column named serialized; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "price",
+          "meaning": "Price amount.",
+          "data_type": "currency",
+          "semantic_tags": [
+            "price",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "qty",
+          "meaning": "Quantity.",
+          "data_type": "number",
+          "semantic_tags": [
+            "quantity",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "cost",
+          "meaning": "Cost amount.",
+          "data_type": "currency",
+          "semantic_tags": [
+            "cost",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "lastcost",
+          "meaning": "Export column named lastcost; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "minwholesale",
+          "meaning": "Export column named minwholesale; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "wholesale",
+          "meaning": "Export column named wholesale; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "compaidon",
+          "meaning": "Export column named compaidon; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "barcode",
+          "meaning": "Export column named barcode; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "condition",
+          "meaning": "Export column named condition; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "adddate",
+          "meaning": "Date/time the record was added.",
+          "data_type": "date",
+          "semantic_tags": [
+            "date"
+          ],
+          "source": "export"
+        }
+      ],
+      "aliases": [
+        "inventory",
+        "stock",
+        "on hand"
+      ],
+      "join_keys": [
+        "custno",
+        "company",
+        "marketid",
+        "item"
+      ],
+      "screenshot_folder": "Inventory Report/Inventory Report",
+      "export_sample": "Purely Wireless Data/Purely Wireless Data/Inventory Report/Inventory_Custom_7HO08JAY3.xls",
+      "notes": "Columns recovered from provided export."
+    },
+    {
+      "id": "inventory_transaction_report",
+      "name": "Inventory Transaction Report",
+      "tab": "Inventory Report",
+      "url_path": "Inventory_Transaction.fwx",
+      "source_type": "grid_or_export",
+      "filters": [
+        {
+          "name": "Market ID",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "State",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "StoreType",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Store",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Created Since",
+          "control_type": "single_date",
+          "required": false,
+          "notes": ""
+        }
+      ],
+      "controls": [
+        "Generate",
+        "Raw Excel"
+      ],
+      "columns": [
+        {
+          "name": "Batch ID",
+          "meaning": "Export column named Batch ID; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "Item Number",
+          "meaning": "Item/SKU number.",
+          "data_type": "text",
+          "semantic_tags": [
+            "item",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "Item Description",
+          "meaning": "Item description.",
+          "data_type": "text",
+          "semantic_tags": [
+            "item"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "Type",
+          "meaning": "Export column named Type; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "Description",
+          "meaning": "Export column named Description; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "Cost",
+          "meaning": "Export column named Cost; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "Serialized?",
+          "meaning": "Export column named Serialized?; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "Old Qty",
+          "meaning": "Export column named Old Qty; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "Add Qty",
+          "meaning": "Export column named Add Qty; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "PO Number",
+          "meaning": "Export column named PO Number; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "Vendor",
+          "meaning": "Export column named Vendor; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "Add User",
+          "meaning": "Export column named Add User; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "Add Date",
+          "meaning": "Export column named Add Date; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        }
+      ],
+      "aliases": [
+        "inventory transaction",
+        "batch adjustment"
+      ],
+      "join_keys": [
+        "Batch ID",
+        "Item Number"
+      ],
+      "screenshot_folder": "Inventory Report/Inventory Transaction Report",
+      "export_sample": "Purely Wireless Data/Purely Wireless Data/Inventory Report/Inventory Custom Report.xlsx",
+      "notes": "Columns recovered from provided export."
+    },
+    {
+      "id": "inventory_audit_log",
+      "name": "Inventory Audit Log",
+      "tab": "Inventory Report",
+      "url_path": "InventoryAuditLog.fwx",
+      "source_type": "grid_or_export",
+      "filters": [
+        {
+          "name": "Market ID",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "State",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "StoreType",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Store",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Created Since",
+          "control_type": "single_date",
+          "required": false,
+          "notes": ""
+        }
+      ],
+      "controls": [
+        "Generate",
+        "Raw Excel"
+      ],
+      "columns": [
+        {
+          "name": "custno",
+          "meaning": "Store/customer number.",
+          "data_type": "text",
+          "semantic_tags": [
+            "store",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "company",
+          "meaning": "Store or company display name.",
+          "data_type": "text",
+          "semantic_tags": [
+            "store",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "adddate",
+          "meaning": "Date/time the record was added.",
+          "data_type": "date",
+          "semantic_tags": [
+            "date"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "username",
+          "meaning": "Employee/user ID.",
+          "data_type": "text",
+          "semantic_tags": [
+            "employee",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "scancount",
+          "meaning": "Export column named scancount; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "matchedcount",
+          "meaning": "Export column named matchedcount; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "unmatchedcount",
+          "meaning": "Export column named unmatchedcount; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "missing",
+          "meaning": "Export column named missing; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "remark",
+          "meaning": "Export column named remark; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "iid",
+          "meaning": "Export column named iid; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "fk_store",
+          "meaning": "Internal store foreign key.",
+          "data_type": "text",
+          "semantic_tags": [
+            "store",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "dba",
+          "meaning": "Export column named dba; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        }
+      ],
+      "aliases": [
+        "audit log",
+        "inventory audit"
+      ],
+      "join_keys": [
+        "custno",
+        "company",
+        "fk_store"
+      ],
+      "screenshot_folder": "Inventory Report/INVENTORY AUDIT LOG",
+      "export_sample": "Purely Wireless Data/Purely Wireless Data/Inventory Report/InventoryAudit_Log_7HO08MHYX.xls",
+      "notes": "Columns recovered from provided export."
+    },
+    {
+      "id": "inventory_tangible_audit_log",
+      "name": "Inventory Tangible Audit Log",
+      "tab": "Inventory Report",
+      "url_path": "InventoryAuditLog_Tangible.fwx",
+      "source_type": "grid_or_export",
+      "filters": [
+        {
+          "name": "Market ID",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "State",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "StoreType",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Store",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Created Since",
+          "control_type": "single_date",
+          "required": false,
+          "notes": ""
+        }
+      ],
+      "controls": [
+        "Generate",
+        "Raw Excel"
+      ],
+      "columns": [
+        {
+          "name": "marketid",
+          "meaning": "Market identifier used by RT BDI filters and exports.",
+          "data_type": "text",
+          "semantic_tags": [
+            "market",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "custno",
+          "meaning": "Store/customer number.",
+          "data_type": "text",
+          "semantic_tags": [
+            "store",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "company",
+          "meaning": "Store or company display name.",
+          "data_type": "text",
+          "semantic_tags": [
+            "store",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "adddate",
+          "meaning": "Date/time the record was added.",
+          "data_type": "date",
+          "semantic_tags": [
+            "date"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "username",
+          "meaning": "Employee/user ID.",
+          "data_type": "text",
+          "semantic_tags": [
+            "employee",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "itemcount",
+          "meaning": "Export column named itemcount; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "scanqty",
+          "meaning": "Export column named scanqty; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "sysqty",
+          "meaning": "Export column named sysqty; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "varianceqty",
+          "meaning": "Export column named varianceqty; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "variancecost",
+          "meaning": "Export column named variancecost; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "shortremark",
+          "meaning": "Export column named shortremark; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "adjustedcost",
+          "meaning": "Export column named adjustedcost; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "fk_store",
+          "meaning": "Internal store foreign key.",
+          "data_type": "text",
+          "semantic_tags": [
+            "store",
+            "join"
+          ],
+          "source": "export"
+        }
+      ],
+      "aliases": [
+        "tangible audit",
+        "inventory tangible audit"
+      ],
+      "join_keys": [
+        "marketid",
+        "custno",
+        "company",
+        "fk_store"
+      ],
+      "screenshot_folder": "Inventory Report/INVENTORY AUDIT LOG - TANGIBLE",
+      "export_sample": "Purely Wireless Data/Purely Wireless Data/Inventory Report/Tangible_InventoryAudit_Log_7HO08NOC6.xls",
+      "notes": "Columns recovered from provided export."
+    },
+    {
+      "id": "po_listing_report",
+      "name": "PO Listing Report",
+      "tab": "Inventory Report",
+      "url_path": "POListing.fwx",
+      "source_type": "grid_or_export",
+      "filters": [
+        {
+          "name": "Market ID",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "State",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "StoreType",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Store",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Created Since",
+          "control_type": "single_date",
+          "required": false,
+          "notes": ""
+        }
+      ],
+      "controls": [
+        "Generate",
+        "Raw Excel"
+      ],
+      "columns": [
+        {
+          "name": "custno",
+          "meaning": "Store/customer number.",
+          "data_type": "text",
+          "semantic_tags": [
+            "store",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "storename",
+          "meaning": "Store name.",
+          "data_type": "text",
+          "semantic_tags": [
+            "store",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "marketid",
+          "meaning": "Market identifier used by RT BDI filters and exports.",
+          "data_type": "text",
+          "semantic_tags": [
+            "market",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "pono",
+          "meaning": "Export column named pono; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "podate",
+          "meaning": "Export column named podate; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "poamount",
+          "meaning": "Export column named poamount; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "shipping",
+          "meaning": "Export column named shipping; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "recamount",
+          "meaning": "Export column named recamount; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "openamount",
+          "meaning": "Export column named openamount; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "recdate",
+          "meaning": "Export column named recdate; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "recuser",
+          "meaning": "Export column named recuser; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "vendor",
+          "meaning": "Export column named vendor; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "company",
+          "meaning": "Store or company display name.",
+          "data_type": "text",
+          "semantic_tags": [
+            "store",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "vendorpo",
+          "meaning": "Export column named vendorpo; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "custpo",
+          "meaning": "Export column named custpo; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "adduser",
+          "meaning": "Export column named adduser; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "adddate",
+          "meaning": "Date/time the record was added.",
+          "data_type": "date",
+          "semantic_tags": [
+            "date"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "postat",
+          "meaning": "Export column named postat; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "remark",
+          "meaning": "Export column named remark; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "isreconciled",
+          "meaning": "Export column named isreconciled; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "fk_store",
+          "meaning": "Internal store foreign key.",
+          "data_type": "text",
+          "semantic_tags": [
+            "store",
+            "join"
+          ],
+          "source": "export"
+        }
+      ],
+      "aliases": [
+        "po listing",
+        "purchase order listing"
+      ],
+      "join_keys": [
+        "custno",
+        "storename",
+        "marketid",
+        "pono",
+        "fk_store"
+      ],
+      "screenshot_folder": "Inventory Report/PO Listing Report",
+      "export_sample": "Purely Wireless Data/Purely Wireless Data/Inventory Report/POListing_7HO08PB6F.xls",
+      "notes": "Columns recovered from provided export."
+    },
+    {
+      "id": "inventory_transfer_listing",
+      "name": "Inventory Transfer Listing",
+      "tab": "Inventory Report",
+      "url_path": "InventoryTransferListing.fwx",
+      "source_type": "grid_or_export",
+      "filters": [
+        {
+          "name": "Market ID",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "State",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "StoreType",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Store",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Created Since",
+          "control_type": "single_date",
+          "required": false,
+          "notes": ""
+        }
+      ],
+      "controls": [
+        "Generate",
+        "Raw Excel"
+      ],
+      "columns": [
+        {
+          "name": "marketid",
+          "meaning": "Market identifier used by RT BDI filters and exports.",
+          "data_type": "text",
+          "semantic_tags": [
+            "market",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "fromstore",
+          "meaning": "Export column named fromstore; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "fromcompany",
+          "meaning": "Export column named fromcompany; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "tostore",
+          "meaning": "Export column named tostore; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "tocompany",
+          "meaning": "Export column named tocompany; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "tranid",
+          "meaning": "Export column named tranid; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "adddate",
+          "meaning": "Date/time the record was added.",
+          "data_type": "date",
+          "semantic_tags": [
+            "date"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "username",
+          "meaning": "Employee/user ID.",
+          "data_type": "text",
+          "semantic_tags": [
+            "employee",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "ispending",
+          "meaning": "Export column named ispending; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "remark",
+          "meaning": "Export column named remark; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "recdate",
+          "meaning": "Export column named recdate; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "cost",
+          "meaning": "Cost amount.",
+          "data_type": "currency",
+          "semantic_tags": [
+            "cost",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "shippingcost",
+          "meaning": "Export column named shippingcost; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        }
+      ],
+      "aliases": [
+        "transfer listing",
+        "inventory transfers"
+      ],
+      "join_keys": [
+        "marketid",
+        "fromstore",
+        "tostore",
+        "tranid"
+      ],
+      "screenshot_folder": "Inventory Report/Inventory Transfer Listing",
+      "export_sample": "Purely Wireless Data/Purely Wireless Data/Inventory Report/TransferListingSummary_7HO08OM2H.xls",
+      "notes": "Columns recovered from provided export."
+    },
+    {
+      "id": "inventory_transfer_detail",
+      "name": "Inventory Transfer Detail",
+      "tab": "Inventory Report",
+      "url_path": "InventoryTransferReport.fwx",
+      "source_type": "grid_or_export",
+      "filters": [
+        {
+          "name": "Market ID",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "State",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "StoreType",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Store",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Created Since",
+          "control_type": "single_date",
+          "required": false,
+          "notes": ""
+        }
+      ],
+      "controls": [
+        "Generate",
+        "Raw Excel"
+      ],
+      "columns": [
+        {
+          "name": "fromstore",
+          "meaning": "Export column named fromstore; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "fromcompany",
+          "meaning": "Export column named fromcompany; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "adddate",
+          "meaning": "Date/time the record was added.",
+          "data_type": "date",
+          "semantic_tags": [
+            "date"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "username",
+          "meaning": "Employee/user ID.",
+          "data_type": "text",
+          "semantic_tags": [
+            "employee",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "tostore",
+          "meaning": "Export column named tostore; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "tocompany",
+          "meaning": "Export column named tocompany; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "item",
+          "meaning": "Item/SKU number.",
+          "data_type": "text",
+          "semantic_tags": [
+            "item",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "itmdesc",
+          "meaning": "Item description.",
+          "data_type": "text",
+          "semantic_tags": [
+            "item"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "acccost",
+          "meaning": "Export column named acccost; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "qty",
+          "meaning": "Quantity.",
+          "data_type": "number",
+          "semantic_tags": [
+            "quantity",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "serial",
+          "meaning": "Serial/IMEI value.",
+          "data_type": "text",
+          "semantic_tags": [
+            "serial",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "serialcost",
+          "meaning": "Export column named serialcost; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "frommarketid",
+          "meaning": "Export column named frommarketid; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "tomarketid",
+          "meaning": "Export column named tomarketid; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "ispending",
+          "meaning": "Export column named ispending; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "transferid",
+          "meaning": "Export column named transferid; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        }
+      ],
+      "aliases": [
+        "transfer detail",
+        "transfer items"
+      ],
+      "join_keys": [
+        "fromstore",
+        "tostore",
+        "item",
+        "serial",
+        "transferid"
+      ],
+      "screenshot_folder": "Inventory Report/Inventory Transfer Detail",
+      "export_sample": "Purely Wireless Data/Purely Wireless Data/Inventory Report/InvetoryTransferDetail.xls",
+      "notes": "Columns recovered from provided export."
+    },
+    {
+      "id": "inventory_matrix",
+      "name": "Inventory Matrix",
+      "tab": "Inventory Report",
+      "url_path": "InventoryMatrix.fwx",
+      "source_type": "grid",
+      "filters": [
+        {
+          "name": "Market ID",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "State",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "StoreType",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Store",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Created Since",
+          "control_type": "single_date",
+          "required": false,
+          "notes": ""
+        }
+      ],
+      "controls": [
+        "Generate",
+        "Raw Excel"
+      ],
+      "columns": [],
+      "aliases": [
+        "inventory matrix"
+      ],
+      "join_keys": [],
+      "screenshot_folder": null,
+      "export_sample": null,
+      "notes": "Screenshot metadata present; export sample not provided yet."
+    },
+    {
+      "id": "buy_back_instock_report",
+      "name": "Buy-Back InStock Report",
+      "tab": "Inventory Report",
+      "url_path": "BuyBackReport.fwx",
+      "source_type": "grid",
+      "filters": [
+        {
+          "name": "Market ID",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "State",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "StoreType",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Store",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Created Since",
+          "control_type": "single_date",
+          "required": false,
+          "notes": ""
+        }
+      ],
+      "controls": [
+        "Generate",
+        "Raw Excel"
+      ],
+      "columns": [],
+      "aliases": [
+        "buy back instock",
+        "buy-back in stock"
+      ],
+      "join_keys": [],
+      "screenshot_folder": null,
+      "export_sample": null,
+      "notes": "Screenshot metadata present; export sample not provided yet."
+    },
+    {
+      "id": "serial_rma_report",
+      "name": "RMA Serial Report",
+      "tab": "Inventory Report",
+      "url_path": "RMAReport.fwx",
+      "source_type": "grid_or_export",
+      "filters": [
+        {
+          "name": "Market ID",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "State",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "StoreType",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Store",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Created Since",
+          "control_type": "single_date",
+          "required": false,
+          "notes": ""
+        }
+      ],
+      "controls": [
+        "Generate",
+        "Raw Excel"
+      ],
+      "columns": [
+        {
+          "name": "custno",
+          "meaning": "Store/customer number.",
+          "data_type": "text",
+          "semantic_tags": [
+            "store",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "company",
+          "meaning": "Store or company display name.",
+          "data_type": "text",
+          "semantic_tags": [
+            "store",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "serial",
+          "meaning": "Serial/IMEI value.",
+          "data_type": "text",
+          "semantic_tags": [
+            "serial",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "item",
+          "meaning": "Item/SKU number.",
+          "data_type": "text",
+          "semantic_tags": [
+            "item",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "itmdesc",
+          "meaning": "Item description.",
+          "data_type": "text",
+          "semantic_tags": [
+            "item"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "prodline",
+          "meaning": "Export column named prodline; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "qty",
+          "meaning": "Quantity.",
+          "data_type": "number",
+          "semantic_tags": [
+            "quantity",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "custno1",
+          "meaning": "Export column named custno1; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "price",
+          "meaning": "Price amount.",
+          "data_type": "currency",
+          "semantic_tags": [
+            "price",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "pono",
+          "meaning": "Export column named pono; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "vendor",
+          "meaning": "Export column named vendor; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "cost",
+          "meaning": "Cost amount.",
+          "data_type": "currency",
+          "semantic_tags": [
+            "cost",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "adddate",
+          "meaning": "Date/time the record was added.",
+          "data_type": "date",
+          "semantic_tags": [
+            "date"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "solduser",
+          "meaning": "Export column named solduser; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "rmadate",
+          "meaning": "Export column named rmadate; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "adduser",
+          "meaning": "Export column named adduser; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        }
+      ],
+      "aliases": [
+        "rma serial",
+        "serial rma"
+      ],
+      "join_keys": [
+        "custno",
+        "company",
+        "serial",
+        "item"
+      ],
+      "screenshot_folder": "Inventory Report/Serial RMA Report",
+      "export_sample": "Purely Wireless Data/Purely Wireless Data/Inventory Report/SerialRMAReport.xls",
+      "notes": "Columns recovered from provided export."
+    },
+    {
+      "id": "rma_shipped_report",
+      "name": "RMA Shipped Report",
+      "tab": "Inventory Report",
+      "url_path": "RMAShipment.fwx",
+      "source_type": "grid",
+      "filters": [
+        {
+          "name": "Market ID",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "State",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "StoreType",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Store",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Created Since",
+          "control_type": "single_date",
+          "required": false,
+          "notes": ""
+        }
+      ],
+      "controls": [
+        "Generate",
+        "Raw Excel"
+      ],
+      "columns": [],
+      "aliases": [
+        "rma shipped"
+      ],
+      "join_keys": [],
+      "screenshot_folder": "Inventory Report/RMA Shipped Report",
+      "export_sample": null,
+      "notes": "Screenshot metadata present; export sample not provided yet."
+    },
+    {
+      "id": "serial_demo_display_report",
+      "name": "Serial Demo/Display Report",
+      "tab": "Inventory Report",
+      "url_path": "SerialDemoReport.fwx",
+      "source_type": "grid",
+      "filters": [
+        {
+          "name": "Market ID",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "State",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "StoreType",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Store",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Created Since",
+          "control_type": "single_date",
+          "required": false,
+          "notes": ""
+        }
+      ],
+      "controls": [
+        "Generate",
+        "Raw Excel"
+      ],
+      "columns": [],
+      "aliases": [
+        "demo display serial",
+        "serial demo display"
+      ],
+      "join_keys": [],
+      "screenshot_folder": "Inventory Report/Serial DemoDisplay Report",
+      "export_sample": null,
+      "notes": "Screenshot metadata present; export sample not provided yet."
+    },
+    {
+      "id": "serial_adjusted_report",
+      "name": "Serial Adjusted Report",
+      "tab": "Inventory Report",
+      "url_path": "SerialAdjustedReport.fwx",
+      "source_type": "grid_or_export",
+      "filters": [
+        {
+          "name": "Market ID",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "State",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "StoreType",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Store",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Created Since",
+          "control_type": "single_date",
+          "required": false,
+          "notes": ""
+        }
+      ],
+      "controls": [
+        "Generate",
+        "Raw Excel"
+      ],
+      "columns": [
+        {
+          "name": "marketid",
+          "meaning": "Market identifier used by RT BDI filters and exports.",
+          "data_type": "text",
+          "semantic_tags": [
+            "market",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "custno",
+          "meaning": "Store/customer number.",
+          "data_type": "text",
+          "semantic_tags": [
+            "store",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "company",
+          "meaning": "Store or company display name.",
+          "data_type": "text",
+          "semantic_tags": [
+            "store",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "serial",
+          "meaning": "Serial/IMEI value.",
+          "data_type": "text",
+          "semantic_tags": [
+            "serial",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "item",
+          "meaning": "Item/SKU number.",
+          "data_type": "text",
+          "semantic_tags": [
+            "item",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "itmdesc",
+          "meaning": "Item description.",
+          "data_type": "text",
+          "semantic_tags": [
+            "item"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "prodline",
+          "meaning": "Export column named prodline; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "qty",
+          "meaning": "Quantity.",
+          "data_type": "number",
+          "semantic_tags": [
+            "quantity",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "custno1",
+          "meaning": "Export column named custno1; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "price",
+          "meaning": "Price amount.",
+          "data_type": "currency",
+          "semantic_tags": [
+            "price",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "pono",
+          "meaning": "Export column named pono; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "vendor",
+          "meaning": "Export column named vendor; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "cost",
+          "meaning": "Cost amount.",
+          "data_type": "currency",
+          "semantic_tags": [
+            "cost",
+            "metric"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "adddate",
+          "meaning": "Date/time the record was added.",
+          "data_type": "date",
+          "semantic_tags": [
+            "date"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "solduser",
+          "meaning": "Export column named solduser; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "adjustdate",
+          "meaning": "Export column named adjustdate; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "adduser",
+          "meaning": "Export column named adduser; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "remark",
+          "meaning": "Export column named remark; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        }
+      ],
+      "aliases": [
+        "serial adjusted",
+        "serial adjustment"
+      ],
+      "join_keys": [
+        "marketid",
+        "custno",
+        "company",
+        "serial",
+        "item"
+      ],
+      "screenshot_folder": "Inventory Report/Serial Adjusted Report",
+      "export_sample": "Purely Wireless Data/Purely Wireless Data/Inventory Report/Serial_Adjsuted_Report_Detailed_7HO08X7YD.xls",
+      "notes": "Columns recovered from provided export."
+    },
+    {
+      "id": "tangible_adjusted_report",
+      "name": "Tangible Adjusted Report",
+      "tab": "Inventory Report",
+      "url_path": "AdjustedReport.fwx",
+      "source_type": "grid_or_export",
+      "filters": [
+        {
+          "name": "Market ID",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "State",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "StoreType",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Store",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Created Since",
+          "control_type": "single_date",
+          "required": false,
+          "notes": ""
+        }
+      ],
+      "controls": [
+        "Generate",
+        "Raw Excel"
+      ],
+      "columns": [
+        {
+          "name": "Store ID / Store Name",
+          "meaning": "Export column named Store ID / Store Name; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "Emp ID",
+          "meaning": "Employee/user ID.",
+          "data_type": "text",
+          "semantic_tags": [
+            "employee",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "Item #",
+          "meaning": "Item/SKU number.",
+          "data_type": "text",
+          "semantic_tags": [
+            "item",
+            "join"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "Item Description",
+          "meaning": "Item description.",
+          "data_type": "text",
+          "semantic_tags": [
+            "item"
+          ],
+          "source": "export"
+        },
+        {
+          "name": "Date/Time",
+          "meaning": "Export column named Date/Time; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "Cost",
+          "meaning": "Export column named Cost; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "Old Qty",
+          "meaning": "Export column named Old Qty; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        },
+        {
+          "name": "Adj Qty",
+          "meaning": "Export column named Adj Qty; exact business meaning should be confirmed during live validation.",
+          "data_type": "unknown",
+          "semantic_tags": [],
+          "source": "export"
+        }
+      ],
+      "aliases": [
+        "tangible adjusted",
+        "tangible adjustment"
+      ],
+      "join_keys": [
+        "Store ID / Store Name",
+        "Emp ID",
+        "Item #"
+      ],
+      "screenshot_folder": "Inventory Report/TANGIBLE ADJUSTED REPORT",
+      "export_sample": "Purely Wireless Data/Purely Wireless Data/Inventory Report/Tangible Adjusted Report.xls",
+      "notes": "Columns recovered from provided export."
+    },
+    {
+      "id": "not_verified_serial_report",
+      "name": "Not Verified Serial Report",
+      "tab": "Inventory Report",
+      "url_path": "SerialNumberReport_NotVerified.fwx",
+      "source_type": "grid",
+      "filters": [
+        {
+          "name": "Market ID",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "State",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "StoreType",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Store",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Created Since",
+          "control_type": "single_date",
+          "required": false,
+          "notes": ""
+        }
+      ],
+      "controls": [
+        "Generate",
+        "Raw Excel"
+      ],
+      "columns": [],
+      "aliases": [
+        "not verified serial"
+      ],
+      "join_keys": [],
+      "screenshot_folder": "Inventory Report/Not Verified Serial Report",
+      "export_sample": null,
+      "notes": "Screenshot metadata present; export sample not provided yet."
+    },
+    {
+      "id": "serial_number_report",
+      "name": "Serial Number Report",
+      "tab": "Inventory Report",
+      "url_path": "SerialNumberReport.fwx",
+      "source_type": "grid",
+      "filters": [
+        {
+          "name": "Market ID",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "State",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "StoreType",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Store",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Created Since",
+          "control_type": "single_date",
+          "required": false,
+          "notes": ""
+        }
+      ],
+      "controls": [
+        "Generate",
+        "Raw Excel"
+      ],
+      "columns": [],
+      "aliases": [
+        "serial number",
+        "imei"
+      ],
+      "join_keys": [
+        "serial",
+        "item"
+      ],
+      "screenshot_folder": "Inventory Report/Serial Number Report",
+      "export_sample": null,
+      "notes": "Screenshot metadata present; export sample not provided yet."
+    },
+    {
+      "id": "serial_aging_report",
+      "name": "Serial Aging Report",
+      "tab": "Inventory Report",
+      "url_path": "SerialAgingReport.fwx",
+      "source_type": "grid",
+      "filters": [
+        {
+          "name": "Market ID",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "State",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "StoreType",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Store",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Created Since",
+          "control_type": "single_date",
+          "required": false,
+          "notes": ""
+        }
+      ],
+      "controls": [
+        "Generate",
+        "Raw Excel"
+      ],
+      "columns": [],
+      "aliases": [
+        "serial aging",
+        "aging over 30"
+      ],
+      "join_keys": [],
+      "screenshot_folder": "Inventory Report/SERIAL AGING OVER 30 DAYS",
+      "export_sample": null,
+      "notes": "Screenshot metadata present; export sample not provided yet."
+    },
+    {
+      "id": "open_po_report",
+      "name": "Open PO Report",
+      "tab": "Inventory Report",
+      "url_path": "OpenPOReport.fwx",
+      "source_type": "grid",
+      "filters": [
+        {
+          "name": "Market ID",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "State",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "StoreType",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Store",
+          "control_type": "select2",
+          "required": false,
+          "notes": ""
+        },
+        {
+          "name": "Created Since",
+          "control_type": "single_date",
+          "required": false,
+          "notes": ""
+        }
+      ],
+      "controls": [
+        "Generate",
+        "Raw Excel"
+      ],
+      "columns": [],
+      "aliases": [
+        "open po",
+        "open purchase order"
+      ],
+      "join_keys": [],
+      "screenshot_folder": "Inventory Report/Open PO Report",
+      "export_sample": null,
+      "notes": "Screenshot metadata present; export sample not provided yet."
+    }
+  ]
+}

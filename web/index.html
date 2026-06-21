@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>RT BDI AI Reporting Assistant</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hero">
+        <div>
+          <p class="eyebrow">RT BDI</p>
+          <h1>AI Reporting Assistant</h1>
+          <p class="subhead">
+            Ask plain-English questions. The backend chooses the RT BDI report,
+            generates live exports, merges data when needed, and returns the answer.
+          </p>
+          <p id="connectionStatus" class="connection-status">Checking backend connection...</p>
+        </div>
+        <button id="homeSnapshot">Load Home snapshot</button>
+      </section>
+
+      <section id="messages" class="messages" aria-live="polite"></section>
+
+      <form id="chatForm" class="composer">
+        <input
+          id="question"
+          name="question"
+          autocomplete="off"
+          placeholder="Example: Top seller's plan mix, their store inventory, and gross profit vs #2"
+          required
+        />
+        <button type="submit">Ask</button>
+      </form>
+
+      <section class="examples">
+        <p>Try:</p>
+        <button data-question="who's number one in phone sales?">Who's #1 in phone sales?</button>
+        <button data-question="what are their accessories?">Their accessories?</button>
+        <button data-question="How many Samsung phones in stock?">Samsung inventory</button>
+        <button data-question="Top accessory seller - what's their gross profit and store?">Top acc seller + GP</button>
+      </section>
+    </main>
+    <script src="./config.js" onerror="console.info('No web/config.js found; using same-origin or localStorage rtbdiApiBase')"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>

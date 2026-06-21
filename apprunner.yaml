@@ -1,0 +1,16 @@
+version: 1.0
+runtime: docker
+build:
+  commands:
+    build:
+      - echo "Building RT BDI backend container"
+run:
+  command: uvicorn rtbdi_assistant.api:app --host 0.0.0.0 --port 8000
+  network:
+    port: 8000
+    env: PORT
+  env:
+    - name: RTBDI_BASE_URL
+      value: https://www.myrtpos.com/newbdi/index.fwx
+    - name: RTBDI_MEMORY_DIR
+      value: /tmp/rtbdi-memory

@@ -1,0 +1,12 @@
+.git
+.venv
+__pycache__
+*.pyc
+.pytest_cache
+downloads
+storage-state.json
+.rtbdi-memory.json
+.rtbdi-api-memory
+web
+tests
+docs
