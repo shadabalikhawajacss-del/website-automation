@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 from functools import lru_cache
 from pathlib import Path
 from typing import Any
@@ -8,6 +9,22 @@ from typing import Any
 from .models import Column, FilterControl, KnowledgeMap, Report
 
 DEFAULT_KNOWLEDGE_PATH = Path(__file__).resolve().parents[2] / "knowledge" / "report_map.json"
+
+
+def default_knowledge_path() -> Path:
+    candidates = [
+        os.getenv("RTBDI_KNOWLEDGE_PATH"),
+        DEFAULT_KNOWLEDGE_PATH,
+        Path.cwd() / "knowledge" / "report_map.json",
+        Path("/app/knowledge/report_map.json"),
+    ]
+    for candidate in candidates:
+        if not candidate:
+            continue
+        path = Path(candidate)
+        if path.exists():
+            return path
+    return DEFAULT_KNOWLEDGE_PATH
 
 
 def _column(data: dict[str, Any]) -> Column:
@@ -49,7 +66,7 @@ def _report(data: dict[str, Any]) -> Report:
 
 @lru_cache(maxsize=4)
 def load_knowledge(path: str | Path | None = None) -> KnowledgeMap:
-    source = Path(path) if path else DEFAULT_KNOWLEDGE_PATH
+    source = Path(path) if path else default_knowledge_path()
     payload = json.loads(source.read_text(encoding="utf-8"))
     return KnowledgeMap(
         site=payload["site"],
