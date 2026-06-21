@@ -274,6 +274,26 @@ def _cmd_live_answer(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_route_debug(args: argparse.Namespace) -> int:
+    memory = ConversationMemory.load(Path(args.memory) if args.memory else None)
+    intent = select_live_intent(args.question, memory)
+    print(
+        json.dumps(
+            {
+                "question": args.question,
+                "canonical_question": intent.canonical_question,
+                "report_ids": list(intent.report_ids),
+                "reasoning": intent.reasoning,
+                "confidence": intent.confidence,
+                "needs_clarification": intent.needs_clarification,
+                "memory_used": intent.memory_used,
+            },
+            indent=2,
+        )
+    )
+    return 0
+
+
 async def _validate_reports(args: argparse.Namespace) -> list[dict[str, object]]:
     km = load_knowledge(args.knowledge) if args.knowledge else load_knowledge()
     requested = [report.id for report in km.reports if report.source_type != "dashboard"] if args.all else args.report_id
@@ -444,6 +464,11 @@ def build_parser() -> argparse.ArgumentParser:
     live_answer.add_argument("--downloads-dir", default="downloads")
     live_answer.add_argument("--memory", default=".rtbdi-memory.json", help="Conversation memory JSON path for follow-up questions")
     live_answer.set_defaults(func=_cmd_live_answer)
+
+    route_debug = subparsers.add_parser("route-debug", help="Show how a question routes before running live reports")
+    route_debug.add_argument("question")
+    route_debug.add_argument("--memory", default=".rtbdi-memory.json")
+    route_debug.set_defaults(func=_cmd_route_debug)
 
     validate = subparsers.add_parser("validate-reports", help="Open/generate/export mapped live reports and summarize results")
     validate.add_argument("report_id", nargs="*", help="Report ids to validate")

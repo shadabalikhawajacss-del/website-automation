@@ -15,6 +15,7 @@ class LiveIntent:
     memory_used: bool = False
     reasoning: str | None = None
     needs_clarification: str | None = None
+    confidence: float = 0.0
 
 
 @dataclass
@@ -113,9 +114,64 @@ def canonicalize_question(question: str, memory: ConversationMemory | None = Non
     return canonical, memory_used
 
 
-def select_live_reports(question: str, memory: ConversationMemory | None = None) -> LiveIntent:
+PRODUCT_WORDS = {
+    "iphone",
+    "ipad",
+    "samsung",
+    "galaxy",
+    "a16",
+    "a17",
+    "revvl",
+    "tripsim",
+    "sim",
+    "motorola",
+    "moto",
+    "nimbus",
+    "case",
+    "charger",
+    "tablet",
+    "watch",
+}
+
+STOCK_WORDS = {"inventory", "stock", "stocks", "on hand", "available", "left", "in stock", "how many"}
+TREND_WORDS = {
+    "sold",
+    "sales",
+    "sale7",
+    "sale14",
+    "sale30",
+    "selling",
+    "trend",
+    "last 7",
+    "last 14",
+    "last 30",
+    "30 day",
+    "30-day",
+    "7 day",
+    "7-day",
+    "fast",
+    "slow",
+}
+
+
+def _has_any(text: str, words: set[str]) -> bool:
+    return any(word in text for word in words)
+
+
+def skill_route(question: str, memory: ConversationMemory | None = None) -> LiveIntent | None:
     canonical, memory_used = canonicalize_question(question, memory)
     lowered = canonical.casefold()
+
+    has_product = _has_any(lowered, PRODUCT_WORDS) or bool(re.search(r"\b[a-z]+\s*\d{1,3}\b", lowered))
+    has_stock = _has_any(lowered, STOCK_WORDS)
+    has_trend = _has_any(lowered, TREND_WORDS)
+
+    if has_product and has_stock and has_trend:
+        return LiveIntent(question, canonical, ("inventory_report", "phone_trend_by_market"), memory_used, reasoning="skill: product stock plus sales trend", confidence=0.98)
+    if has_product and has_stock:
+        return LiveIntent(question, canonical, ("inventory_report",), memory_used, reasoning="skill: product/model stock question maps to Inventory Report columns item/itmdesc/qty/cost", confidence=0.99)
+    if has_product and has_trend:
+        return LiveIntent(question, canonical, ("phone_trend_by_market",), memory_used, reasoning="skill: product/model sales trend question maps to Phone Trend sale7/sale14/sale30", confidence=0.98)
 
     if (
         "home" in lowered
@@ -168,7 +224,12 @@ def select_live_reports(question: str, memory: ConversationMemory | None = None)
     else:
         report_ids = ("employee_performance_report",)
 
-    return LiveIntent(question, canonical, report_ids, memory_used)
+    confidence = 0.55 if report_ids == ("employee_performance_report",) else 0.85
+    return LiveIntent(question, canonical, report_ids, memory_used, reasoning="skill: deterministic report capability match", confidence=confidence)
+
+
+def select_live_reports(question: str, memory: ConversationMemory | None = None) -> LiveIntent:
+    return skill_route(question, memory) or LiveIntent(question, question, ("employee_performance_report",), reasoning="fallback", confidence=0.1)
 
 
 SUPPORTED_LIVE_REPORTS = {

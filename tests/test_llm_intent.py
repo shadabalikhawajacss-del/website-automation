@@ -13,7 +13,7 @@ def test_select_live_intent_falls_back_without_openai_key():
 
 
 def test_reconcile_keeps_specific_deterministic_route_over_default_employee():
-    deterministic = LiveIntent("iphone 13 how many stocks", "iphone 13 how many inventory", ("inventory_report",))
+    deterministic = LiveIntent("iphone 13 how many stocks", "iphone 13 how many inventory", ("inventory_report",), confidence=0.99)
     llm_intent = LiveIntent("iphone 13 how many stocks", "iphone 13 how many stocks", ("employee_performance_report",))
 
     result = reconcile_live_intent(deterministic, llm_intent)

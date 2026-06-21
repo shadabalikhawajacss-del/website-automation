@@ -173,6 +173,7 @@ See:
 - `docs/deployment.md`
 - `docs/site_coverage.md`
 - `docs/complex_question_examples.md`
+- `docs/routing_skills.md`
 - `docs/live_validation_summary.md`
 
 Validate live report export coverage:

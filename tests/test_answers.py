@@ -196,6 +196,33 @@ custno,company,marketid,region,item,manufacturer,color,itmdesc,serialized,qty,co
     assert "$730.00" in result.answer
 
 
+def test_answers_inventory_with_phone_trend(tmp_path):
+    inventory = _write(
+        tmp_path / "inventory.csv",
+        """
+custno,company,marketid,region,item,manufacturer,color,itmdesc,serialized,qty,cost
+001,ROCKON MAIN,HOUSTON,HASSAN,IP13,Apple,Black,Apple iPhone 13 128GB,Y,4,100.00
+002,ROCKON NASA,HOUSTON,ASAD,IP13,Apple,Black,Apple iPhone 13 128GB,Y,3,110.00
+""",
+    )
+    trend = _write(
+        tmp_path / "trend.csv",
+        """
+marketid,custno,company,item,itmdesc,onhand,sale7,sale14,sale30
+HOUSTON,001,ROCKON MAIN,IP13,Apple iPhone 13 128GB,7,1,2,5
+""",
+    )
+
+    result = answer_from_exports(
+        "iphone 13 stock and 30 day sales",
+        {"inventory_report": inventory, "phone_trend_by_market": trend},
+    )
+
+    assert "inventory quantity 7" in result.answer
+    assert "sale30 5" in result.answer
+    assert result.reports_used == ("inventory_report", "phone_trend_by_market")
+
+
 def test_answers_bill_payment_listing(tmp_path):
     bill = _write(
         tmp_path / "bill.csv",

@@ -33,6 +33,16 @@ class ChatResponse(BaseModel):
     notes: list[str] = []
 
 
+class RouteDebugResponse(BaseModel):
+    question: str
+    canonical_question: str
+    report_ids: list[str]
+    reasoning: str | None = None
+    confidence: float
+    needs_clarification: str | None = None
+    memory_used: bool
+
+
 def create_app() -> FastAPI:
     app = FastAPI(title="RT BDI AI Reporting Assistant")
     cors_origins = [origin.strip() for origin in os.getenv("RTBDI_CORS_ORIGINS", "*").split(",") if origin.strip()]
@@ -142,6 +152,22 @@ def create_app() -> FastAPI:
                 )
             except Exception as exc:
                 raise HTTPException(status_code=500, detail=f"{type(exc).__name__}: {exc}") from exc
+
+    @app.post("/route-debug", response_model=RouteDebugResponse)
+    async def route_debug(request: ChatRequest) -> RouteDebugResponse:
+        memory_dir = Path(os.getenv("RTBDI_MEMORY_DIR", ".rtbdi-api-memory"))
+        safe_session = "".join(ch for ch in request.session_id if ch.isalnum() or ch in {"-", "_"}) or "default"
+        memory = ConversationMemory.load(memory_dir / f"{safe_session}.json")
+        intent = select_live_intent(request.question, memory)
+        return RouteDebugResponse(
+            question=request.question,
+            canonical_question=intent.canonical_question,
+            report_ids=list(intent.report_ids),
+            reasoning=intent.reasoning,
+            confidence=intent.confidence,
+            needs_clarification=intent.needs_clarification,
+            memory_used=intent.memory_used,
+        )
 
     @app.get("/home-snapshot")
     async def home_snapshot() -> dict:

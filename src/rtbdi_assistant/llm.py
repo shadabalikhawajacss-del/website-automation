@@ -40,6 +40,8 @@ def reconcile_live_intent(deterministic: LiveIntent, llm_intent: LiveIntent | No
 
     if llm_intent is None:
         return deterministic
+    if deterministic.confidence >= 0.95:
+        return deterministic
     if llm_intent.needs_clarification:
         return llm_intent
     if not llm_intent.report_ids:

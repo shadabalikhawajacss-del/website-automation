@@ -187,6 +187,9 @@ def answer_from_exports(question: str, exports: dict[str, Path]) -> AnswerResult
     if {"finance_report", "kpi_report_by_employee"}.issubset(exports) and ("gross profit" in lowered or "gp" in lowered):
         return _answer_finance_with_kpi(question, exports, plan.date_range)
 
+    if {"inventory_report", "phone_trend_by_market"}.issubset(exports):
+        return _answer_inventory_with_trend(question, exports, plan.date_range)
+
     if {"employee_ranking_by_box_sales", "employee_mrc_matrix_report", "kpi_report_by_employee", "inventory_report"}.issubset(exports) and (
         "plan mix" in lowered or ("inventory" in lowered and "gross profit" in lowered)
     ):
@@ -690,6 +693,32 @@ def _answer_inventory(question: str, path: Path, date_range: DateRange) -> Answe
 
     qty = decimal_sum(filtered["qty"]) if "qty" in filtered.columns else Decimal("0")
     return AnswerResult(f"Inventory quantity is {number(qty)}{' at ' + store_text if store_text else ' company-wide'}.", ("inventory_report",), date_range, len(filtered))
+
+
+def _answer_inventory_with_trend(question: str, exports: dict[str, Path], date_range: DateRange) -> AnswerResult:
+    inventory = load_export_table(exports["inventory_report"])
+    trend = load_export_table(exports["phone_trend_by_market"])
+    inv_rows, tokens = _filter_inventory_item_text(inventory, question)
+    trend_rows = _filter_item_text(trend, question)
+    if inv_rows.empty and not tokens:
+        inv_rows = inventory
+    qty = decimal_sum(inv_rows["qty"]) if "qty" in inv_rows.columns else Decimal("0")
+    inv_value = Decimal("0")
+    if {"qty", "cost"}.issubset(inv_rows.columns):
+        for _, row in inv_rows.iterrows():
+            inv_value += (parse_decimal(row.get("qty")) or Decimal("0")) * (parse_decimal(row.get("cost")) or Decimal("0"))
+    sale7 = decimal_sum(trend_rows["sale7"]) if "sale7" in trend_rows.columns else Decimal("0")
+    sale14 = decimal_sum(trend_rows["sale14"]) if "sale14" in trend_rows.columns else Decimal("0")
+    sale30 = decimal_sum(trend_rows["sale30"]) if "sale30" in trend_rows.columns else Decimal("0")
+    names = sorted({display_value(value) for value in inv_rows.get("itmdesc", [])})[:3]
+    description = ", ".join(names) if names else "matching item(s)"
+    return AnswerResult(
+        f"{description}: inventory quantity {number(qty)}, estimated cost value {money(inv_value)}, sales trend sale7 {number(sale7)}, sale14 {number(sale14)}, sale30 {number(sale30)}.",
+        ("inventory_report", "phone_trend_by_market"),
+        date_range,
+        len(inv_rows) + len(trend_rows),
+        context={"last_metric": "inventory and phone trend"},
+    )
 
 
 def _answer_po_listing(question: str, path: Path, date_range: DateRange) -> AnswerResult:

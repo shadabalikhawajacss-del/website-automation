@@ -28,6 +28,14 @@ def test_iphone_stock_routes_to_inventory():
 
     assert intent.report_ids == ("inventory_report",)
     assert "inventory" in intent.canonical_question.casefold()
+    assert intent.confidence >= 0.95
+
+
+def test_product_stock_and_trend_routes_to_two_reports():
+    intent = select_live_reports("iphone 13 stock and 30 day sales")
+
+    assert intent.report_ids == ("inventory_report", "phone_trend_by_market")
+    assert "product stock plus sales trend" in (intent.reasoning or "")
 
 
 def test_profit_synonyms_do_not_double_gross_profit():
