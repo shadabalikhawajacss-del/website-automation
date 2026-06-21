@@ -552,6 +552,58 @@ def _filter_item_text(df: pd.DataFrame, question: str) -> pd.DataFrame:
     return filtered if not filtered.empty else df[df["itmdesc"].map(lambda value: any(token in normalize_text(value) for token in tokens))]
 
 
+def _inventory_item_tokens(question: str) -> list[str]:
+    tokens = re.findall(r"[a-zA-Z0-9]+", question.casefold())
+    ignored = {
+        "how",
+        "many",
+        "much",
+        "stock",
+        "stocks",
+        "inventory",
+        "on",
+        "hand",
+        "in",
+        "at",
+        "store",
+        "stores",
+        "company",
+        "wide",
+        "phones",
+        "phone",
+        "devices",
+        "device",
+        "qty",
+        "quantity",
+        "total",
+        "value",
+        "cost",
+    }
+    return [token for token in tokens if token not in ignored and len(token) > 1]
+
+
+def _filter_inventory_item_text(df: pd.DataFrame, question: str) -> tuple[pd.DataFrame, list[str]]:
+    if "itmdesc" not in df.columns:
+        return df.iloc[0:0], []
+    tokens = _inventory_item_tokens(question)
+    if not tokens:
+        return df.iloc[0:0], []
+    strict = df[df["itmdesc"].map(lambda value: all(token in normalize_text(value) for token in tokens))]
+    if not strict.empty:
+        return strict, tokens
+    partial = df[df["itmdesc"].map(lambda value: any(token in normalize_text(value) for token in tokens))]
+    return partial, tokens
+
+
+def _looks_model_specific(tokens: list[str]) -> bool:
+    if not tokens:
+        return False
+    if any(any(char.isdigit() for char in token) for token in tokens):
+        return True
+    model_words = {"iphone", "revvl", "tripsim", "nimbus", "moto", "galaxy", "ipad"}
+    return any(token in model_words for token in tokens)
+
+
 def _answer_phone_trend(question: str, path: Path, date_range: DateRange) -> AnswerResult:
     df = load_export_table(path)
     lowered = question.casefold()
@@ -587,6 +639,23 @@ def _answer_inventory(question: str, path: Path, date_range: DateRange) -> Answe
     df = load_export_table(path)
     filtered, store_text = filter_store(df, question)
     lowered = question.casefold()
+    item_filtered, item_tokens = _filter_inventory_item_text(filtered, question)
+    if item_tokens and not item_filtered.empty and _looks_model_specific(item_tokens):
+        qty = decimal_sum(item_filtered["qty"]) if "qty" in item_filtered.columns else Decimal("0")
+        value = Decimal("0")
+        if {"qty", "cost"}.issubset(item_filtered.columns):
+            for _, row in item_filtered.iterrows():
+                value += (parse_decimal(row.get("qty")) or Decimal("0")) * (parse_decimal(row.get("cost")) or Decimal("0"))
+        sample_names = sorted({display_value(value) for value in item_filtered.get("itmdesc", [])})[:3]
+        description = ", ".join(sample_names) if sample_names else "matching item(s)"
+        return AnswerResult(
+            f"Inventory quantity for {description} is {number(qty)}{' at ' + store_text if store_text else ' company-wide'}; estimated cost value is {money(value)}.",
+            ("inventory_report",),
+            date_range,
+            len(item_filtered),
+            context={"last_stores": [store_text] if store_text else [], "last_metric": "inventory quantity"},
+        )
+
     if "apple" in lowered or "samsung" in lowered or "motorola" in lowered:
         manufacturer = next(word for word in ("apple", "samsung", "motorola") if word in lowered)
         filtered = filtered[filtered["manufacturer"].map(lambda value: manufacturer in normalize_text(value))] if "manufacturer" in filtered.columns else filtered.iloc[0:0]

@@ -23,6 +23,13 @@ def test_selects_inventory_for_stock_words():
     assert intent.report_ids == ("inventory_report",)
 
 
+def test_iphone_stock_routes_to_inventory():
+    intent = select_live_reports("iphone 13 how many stocks")
+
+    assert intent.report_ids == ("inventory_report",)
+    assert "inventory" in intent.canonical_question.casefold()
+
+
 def test_profit_synonyms_do_not_double_gross_profit():
     intent = select_live_reports("how much did the top acc seller make us and where?")
 

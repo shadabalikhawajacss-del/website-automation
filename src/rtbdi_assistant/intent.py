@@ -86,7 +86,7 @@ PHRASE_REPLACEMENTS: tuple[tuple[str, str], ...] = (
     (r"\b#2\b", "#2"),
     (r"\brate plan\b", "plan mix"),
     (r"\bplans?\b", "plan mix"),
-    (r"\bstock\b", "inventory"),
+    (r"\bstocks?\b", "inventory"),
     (r"\bon hand\b", "inventory"),
     (r"\bimei\b", "serial"),
 )
@@ -146,7 +146,16 @@ def select_live_reports(question: str, memory: ConversationMemory | None = None)
         report_ids = ("inventory_transfer_listing",)
     elif "audit" in lowered or "variance" in lowered or "unmatched" in lowered:
         report_ids = ("inventory_tangible_audit_log",) if "tangible" in lowered or "variance" in lowered else ("inventory_audit_log",)
-    elif "inventory" in lowered or "apple" in lowered or "samsung" in lowered or "motorola" in lowered or "serialized" in lowered:
+    elif (
+        "inventory" in lowered
+        or "apple" in lowered
+        or "samsung" in lowered
+        or "motorola" in lowered
+        or "iphone" in lowered
+        or "revvl" in lowered
+        or "tripsim" in lowered
+        or "serialized" in lowered
+    ):
         report_ids = ("inventory_report",)
     elif ("top" in lowered or "rank" in lowered or "most" in lowered or "bottom" in lowered) and "gross profit" in lowered:
         report_ids = ("kpi_report_by_employee",)

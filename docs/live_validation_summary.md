@@ -101,6 +101,7 @@ can add report-specific handlers or confirm account permissions.
 - `How many trade-ins applied, by carrier?` -> unknown 3, Verizon 2
 - `Top 5 fastest-selling phones in the last 30 days.` -> TripleSIM, Samsung A16, Samsung Tab A9+, Samsung A17, TMO REVVL Tab 2
 - `How many Samsung phones in stock?` -> 1,834
+- `iphone 13 how many stocks` -> Inventory quantity for iPhone 13, answered from Inventory Report
 - `Total open PO amount by vendor.` -> IDOO-AUTO $147,721.44, ALPHACOMM $1,414.20, SUPERIOR $138.25
 - `Total transfer cost between stores last month.` -> $192,888.26
 - `Top accessory seller - what's their gross profit and store?` -> Aftab, gross profit $-12,712.18, stores ROCKON ROSENBERG and ROCKON WALLER

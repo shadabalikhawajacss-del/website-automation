@@ -178,6 +178,24 @@ HOUSTON,002,ROCKON NASA,IP13,Apple iPhone 13,5,1,2,3
     assert "2" in sold.answer
 
 
+def test_answers_inventory_item_model_stock(tmp_path):
+    inventory = _write(
+        tmp_path / "inventory.csv",
+        """
+custno,company,marketid,region,item,manufacturer,color,itmdesc,serialized,qty,cost
+001,ROCKON MAIN,HOUSTON,HASSAN,IP13,Apple,Black,Apple iPhone 13 128GB,Y,4,100.00
+002,ROCKON NASA,HOUSTON,ASAD,IP13,Apple,Black,Apple iPhone 13 128GB,Y,3,110.00
+003,ROCKON WALLER,HOUSTON,ASAD,A16,Samsung,Black,Samsung A16,N,5,50.00
+""",
+    )
+
+    result = answer_from_exports("iphone 13 how many stocks", {"inventory_report": inventory})
+
+    assert "Apple iPhone 13" in result.answer
+    assert "is 7" in result.answer
+    assert "$730.00" in result.answer
+
+
 def test_answers_bill_payment_listing(tmp_path):
     bill = _write(
         tmp_path / "bill.csv",
