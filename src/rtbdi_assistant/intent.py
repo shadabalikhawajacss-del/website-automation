@@ -13,6 +13,8 @@ class LiveIntent:
     canonical_question: str
     report_ids: tuple[str, ...]
     memory_used: bool = False
+    reasoning: str | None = None
+    needs_clarification: str | None = None
 
 
 @dataclass
@@ -158,3 +160,37 @@ def select_live_reports(question: str, memory: ConversationMemory | None = None)
         report_ids = ("employee_performance_report",)
 
     return LiveIntent(question, canonical, report_ids, memory_used)
+
+
+SUPPORTED_LIVE_REPORTS = {
+    "home_dashboard",
+    "employee_conversion_ratio",
+    "employee_performance_report",
+    "employee_ranking_by_box_sales",
+    "employee_mrc_matrix_report",
+    "kpi_report_by_employee",
+    "finance_report",
+    "trade_in_custom_report",
+    "bill_payment_listing",
+    "phone_trend_by_market",
+    "inventory_report",
+    "po_listing_report",
+    "inventory_transfer_listing",
+    "inventory_audit_log",
+    "inventory_tangible_audit_log",
+}
+
+
+def live_intent_from_llm_payload(question: str, payload: dict[str, Any], memory: ConversationMemory | None = None) -> LiveIntent | None:
+    report_ids = tuple(report_id for report_id in payload.get("report_ids", []) if report_id in SUPPORTED_LIVE_REPORTS)
+    if not report_ids and not payload.get("needs_clarification"):
+        return None
+    canonical, memory_used = canonicalize_question(str(payload.get("canonical_question") or question), memory)
+    return LiveIntent(
+        original_question=question,
+        canonical_question=canonical,
+        report_ids=report_ids,
+        memory_used=memory_used,
+        reasoning=payload.get("reasoning"),
+        needs_clarification=payload.get("needs_clarification"),
+    )

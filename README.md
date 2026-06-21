@@ -10,6 +10,8 @@ This repository contains the first implementation scaffold for an assistant that
 - Numeric parsing for currency, percentages, and totals.
 - A lightweight query planner that maps user language to report candidates, metrics, filters, joins, and date ranges.
 - An OpenAI-backed planning adapter that reads `OPENAI_API_KEY` from the environment.
+- Optional OpenAI live intent routing before deterministic fallback, so the chat
+  path can reason about user wording before choosing reports.
 - A Playwright automation skeleton for login/session reuse, report navigation, Select2 filters, date setting, generation, and export download.
 - A FastAPI backend and static chatbot UI scaffold.
 - A live Home dashboard snapshot extractor.

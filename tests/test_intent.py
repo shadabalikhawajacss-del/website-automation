@@ -1,4 +1,4 @@
-from rtbdi_assistant.intent import ConversationMemory, canonicalize_question, select_live_reports
+from rtbdi_assistant.intent import ConversationMemory, canonicalize_question, live_intent_from_llm_payload, select_live_reports
 
 
 def test_canonicalizes_casual_metric_words():
@@ -50,3 +50,18 @@ def test_memory_round_trips(tmp_path):
 
     assert loaded.last_employee == {"username": "AAA111", "name": "Alice"}
     assert loaded.last_stores == ["ROCKON MAIN"]
+
+
+def test_live_intent_from_llm_payload_filters_unknown_reports():
+    intent = live_intent_from_llm_payload(
+        "show me the dashboard",
+        {
+            "canonical_question": "How are we doing on the dashboard?",
+            "report_ids": ["home_dashboard", "made_up_report"],
+            "reasoning": "dashboard question",
+        },
+    )
+
+    assert intent is not None
+    assert intent.report_ids == ("home_dashboard",)
+    assert intent.reasoning == "dashboard question"

@@ -16,7 +16,7 @@ from .exports import iter_export_files, summarize_export
 from .home import answer_home_question, extract_home_snapshot
 from .intent import ConversationMemory, select_live_reports
 from .knowledge import load_knowledge
-from .llm import OpenAIInterpreter, preview_interpreter_prompt
+from .llm import OpenAIInterpreter, preview_interpreter_prompt, select_live_intent
 from .models import DateRange
 from .planner import plan_question, plan_to_dict
 
@@ -196,7 +196,18 @@ def _cmd_live_export(args: argparse.Namespace) -> int:
 
 async def _live_answer(args: argparse.Namespace) -> dict[str, object]:
     memory = ConversationMemory.load(Path(args.memory) if args.memory else None)
-    intent = select_live_reports(args.question, memory)
+    intent = select_live_intent(args.question, memory)
+    if intent.needs_clarification:
+        return {
+            "answer": intent.needs_clarification,
+            "reports_used": [],
+            "canonical_question": intent.canonical_question,
+            "memory_used": intent.memory_used,
+            "date_range": {},
+            "rows_used": 0,
+            "notes": [intent.reasoning] if intent.reasoning else [],
+            "exports": {},
+        }
     if intent.report_ids == ("home_dashboard",):
         snapshot = await _download_home_snapshot(args)
         result = answer_home_question(intent.canonical_question, snapshot)

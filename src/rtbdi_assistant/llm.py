@@ -6,9 +6,28 @@ from typing import Any
 from openai import OpenAI
 
 from .config import AssistantConfig
+from .intent import ConversationMemory, LiveIntent, live_intent_from_llm_payload, select_live_reports
 from .knowledge import load_knowledge
 from .models import KnowledgeMap, QueryPlan
 from .planner import plan_question, plan_to_dict
+
+LIVE_REPORT_ROUTE_HINTS = {
+    "home_dashboard": "Home dashboard: today snapshot, top stores now, company summary, dashboard/how are we doing questions.",
+    "employee_conversion_ratio": "Employee conversion ratio and qpay count.",
+    "employee_performance_report": "Employee/store basics, hours, accessory sales, activations, store rankings.",
+    "employee_ranking_by_box_sales": "Top/bottom/ranking by activations, phones, accessory sales.",
+    "employee_mrc_matrix_report": "Plan mix and device add-on mix for employees.",
+    "kpi_report_by_employee": "Gross profit, KPI revenue, payment/MRC/feature revenue.",
+    "finance_report": "Financed amount, approved finance amount, finance company, finance deals.",
+    "trade_in_custom_report": "Trade-ins by carrier/make/model.",
+    "bill_payment_listing": "Bill payment totals, bill payment profit/tax.",
+    "phone_trend_by_market": "Phone trend, 7/14/30-day sales, slow movers.",
+    "inventory_report": "Inventory/stock/on-hand, manufacturers, inventory value.",
+    "po_listing_report": "PO/open purchase order amounts and vendors.",
+    "inventory_transfer_listing": "Inventory transfer costs and transfer summaries.",
+    "inventory_audit_log": "Inventory audit unmatched/missing counts.",
+    "inventory_tangible_audit_log": "Tangible audit variance/scanned/system counts.",
+}
 
 
 def compact_knowledge_summary(knowledge: KnowledgeMap, max_columns_per_report: int = 30) -> list[dict[str, Any]]:
@@ -82,6 +101,58 @@ class OpenAIInterpreter:
             "deterministic_plan": plan_to_dict(deterministic_plan),
             "llm_interpretation": llm_payload,
         }
+
+    def route_live_intent(self, question: str, memory: ConversationMemory | None = None) -> LiveIntent:
+        deterministic = select_live_reports(question, memory)
+        messages = [
+            {
+                "role": "system",
+                "content": (
+                    "You are routing an RT BDI chatbot question. Choose the live reports needed to answer. "
+                    "Use only the supported report IDs provided. Return JSON only with keys: "
+                    "canonical_question, report_ids, needs_clarification, reasoning. "
+                    "If ambiguous, set needs_clarification and use an empty report_ids array. "
+                    "Do not invent report IDs or numbers."
+                ),
+            },
+            {
+                "role": "user",
+                "content": json.dumps(
+                    {
+                        "question": question,
+                        "memory": {
+                            "last_employee": memory.last_employee if memory else None,
+                            "second_employee": memory.second_employee if memory else None,
+                            "last_stores": memory.last_stores if memory else [],
+                            "last_metric": memory.last_metric if memory else None,
+                        },
+                        "deterministic_fallback": {
+                            "canonical_question": deterministic.canonical_question,
+                            "report_ids": list(deterministic.report_ids),
+                        },
+                        "supported_reports": LIVE_REPORT_ROUTE_HINTS,
+                    }
+                ),
+            },
+        ]
+        response = self.client.chat.completions.create(
+            model=self.config.openai_model,
+            messages=messages,
+            response_format={"type": "json_object"},
+            temperature=0,
+        )
+        payload = json.loads(response.choices[0].message.content or "{}")
+        return live_intent_from_llm_payload(question, payload, memory) or deterministic
+
+
+def select_live_intent(question: str, memory: ConversationMemory | None = None, config: AssistantConfig | None = None) -> LiveIntent:
+    config = config or AssistantConfig.from_env()
+    if not config.openai_api_key:
+        return select_live_reports(question, memory)
+    try:
+        return OpenAIInterpreter(config=config).route_live_intent(question, memory)
+    except Exception:
+        return select_live_reports(question, memory)
 
 
 def preview_interpreter_prompt(question: str, knowledge: KnowledgeMap | None = None) -> dict[str, Any]:

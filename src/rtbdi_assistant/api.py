@@ -12,7 +12,8 @@ from .answers import answer_from_exports
 from .automation.playwright_runner import BrowserConfig, PlaywrightReportRunner
 from .cli import _download_or_fallback_export
 from .home import answer_home_question, extract_home_snapshot
-from .intent import ConversationMemory, select_live_reports
+from .intent import ConversationMemory
+from .llm import select_live_intent
 from .models import DateRange
 from .planner import plan_question
 
@@ -55,7 +56,17 @@ def create_app() -> FastAPI:
         memory_path = memory_dir / f"{safe_session}.json"
         memory = ConversationMemory.load(memory_path)
         with TemporaryDirectory() as tmpdir:
-            intent = select_live_reports(request.question, memory)
+            intent = select_live_intent(request.question, memory)
+            if intent.needs_clarification:
+                return ChatResponse(
+                    answer=intent.needs_clarification,
+                    canonical_question=intent.canonical_question,
+                    memory_used=intent.memory_used,
+                    reports_used=[],
+                    date_range={},
+                    rows_used=0,
+                    notes=[intent.reasoning] if intent.reasoning else [],
+                )
             config = BrowserConfig.from_env(downloads_dir=Path(tmpdir) / "downloads")
             if intent.report_ids == ("home_dashboard",):
                 try:
