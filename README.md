@@ -194,4 +194,3 @@ known report-specific edge cases.
 ## Current status
 
 The map is a working seed from the supplied files. Reports with exports have exact column names. Reports represented only by screenshots are included with page/filter metadata where visible and marked for live validation before answering production questions.
-
