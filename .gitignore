@@ -7,3 +7,4 @@ downloads/
 .env
 storage-state.json
 .rtbdi-memory.json
+.rtbdi-api-memory/

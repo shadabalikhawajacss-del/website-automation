@@ -13,6 +13,7 @@ from pypdf import PdfReader
 from .answers import answer_from_exports
 from .automation.playwright_runner import BrowserConfig, PlaywrightReportRunner
 from .exports import iter_export_files, summarize_export
+from .home import extract_home_snapshot
 from .intent import ConversationMemory, select_live_reports
 from .knowledge import load_knowledge
 from .llm import OpenAIInterpreter, preview_interpreter_prompt
@@ -92,6 +93,24 @@ def _cmd_login_session(args: argparse.Namespace) -> int:
     print("RT BDI login succeeded")
     if args.storage_state:
         print(f"Saved browser storage state to {args.storage_state}")
+    return 0
+
+
+async def _home_snapshot(args: argparse.Namespace) -> dict[str, object]:
+    config = BrowserConfig.from_env(headless=not args.headful, downloads_dir=Path(args.downloads_dir))
+    async with PlaywrightReportRunner(config) as runner:
+        page = await runner.new_page()
+        if not config.storage_state:
+            await runner.login(page)
+        await page.goto(config.base_url, wait_until="domcontentloaded")
+        if not await page.get_by_text("LOGOUT", exact=False).count():
+            await runner.login(page)
+        snapshot = await extract_home_snapshot(page)
+        return asdict(snapshot)
+
+
+def _cmd_live_home(args: argparse.Namespace) -> int:
+    print(json.dumps(asyncio.run(_home_snapshot(args)), indent=2))
     return 0
 
 
@@ -340,6 +359,11 @@ def build_parser() -> argparse.ArgumentParser:
     login.add_argument("--storage-state", help="Path to save Playwright storage state JSON")
     login.add_argument("--downloads-dir", default="downloads")
     login.set_defaults(func=_cmd_login_session)
+
+    home = subparsers.add_parser("live-home", help="Extract the live Home dashboard snapshot")
+    home.add_argument("--headful", action="store_true", help="Show the browser while running")
+    home.add_argument("--downloads-dir", default="downloads")
+    home.set_defaults(func=_cmd_live_home)
 
     live_export = subparsers.add_parser("live-export", help="Generate a live RT BDI report and download its export")
     live_export.add_argument("report_id", help="Report id from knowledge/report_map.json")

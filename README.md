@@ -11,6 +11,8 @@ This repository contains the first implementation scaffold for an assistant that
 - A lightweight query planner that maps user language to report candidates, metrics, filters, joins, and date ranges.
 - An OpenAI-backed planning adapter that reads `OPENAI_API_KEY` from the environment.
 - A Playwright automation skeleton for login/session reuse, report navigation, Select2 filters, date setting, generation, and export download.
+- A FastAPI backend and static chatbot UI scaffold.
+- A live Home dashboard snapshot extractor.
 
 Raw customer screenshots and exports are intentionally not committed. Keep them outside git and pass their folder path to the inspection script.
 
@@ -52,6 +54,8 @@ OPENAI_API_KEY=... rtbdi ai-plan "Top 5 employees by accessories last month"
 ## Environment for live automation
 
 The browser runner expects either credentials or an authenticated Playwright storage state. Do not commit secrets.
+
+Browser used: **Playwright Chromium**.
 
 Suggested environment variables:
 
@@ -130,6 +134,33 @@ Examples of normalized wording:
 - "their", "she", "he", "that employee" -> previous employee from memory
 
 By default memory is stored in `.rtbdi-memory.json`, which is ignored by git.
+
+Extract Home dashboard data:
+
+```bash
+rtbdi live-home
+```
+
+## Chatbot UI and backend
+
+Static chatbot files live in `web/`. The backend API is FastAPI:
+
+```bash
+rtbdi-api
+# or
+uvicorn rtbdi_assistant.api:app --host 0.0.0.0 --port 8000
+```
+
+The frontend can be hosted as a static site on Vercel or AWS S3/CloudFront. The
+backend should run on AWS ECS/App Runner/EC2 because it needs Playwright
+Chromium, RT BDI credentials, OpenAI secrets, downloads, and session memory.
+
+See:
+
+- `docs/deployment.md`
+- `docs/site_coverage.md`
+- `docs/complex_question_examples.md`
+- `docs/live_validation_summary.md`
 
 Validate live report export coverage:
 
