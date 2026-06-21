@@ -9,6 +9,7 @@ def test_complex_question_uses_multiple_reports():
     assert "kpi_report_by_employee" in plan.report_ids
     assert plan.date_range.label == "last month"
     assert "username" in plan.joins
+    assert "store_text" not in plan.filters
 
 
 def test_conversion_question_routes_to_conversion_report():

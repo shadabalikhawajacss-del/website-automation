@@ -42,6 +42,17 @@ JOIN_HINTS = {
     "item": ("item", "Item Number", "serial"),
 }
 
+STORE_FILTER_STOPWORDS = {
+    "accessories",
+    "activation",
+    "activations",
+    "finance",
+    "gross profit",
+    "inventory",
+    "plan mix",
+    "sales",
+}
+
 
 def _contains_any(text: str, terms: tuple[str, ...]) -> bool:
     return any(term in text for term in terms)
@@ -86,9 +97,11 @@ def plan_question(question: str, knowledge: KnowledgeMap | None = None) -> Query
             metrics.append(MetricCandidate(report_id, column, f"matched language: {', '.join(terms)}"))
 
     filters: dict[str, str] = {}
-    store_match = re.search(r"\b(?:store|at|for)\s+([a-z0-9][a-z0-9 '&.-]{2,})", lowered)
+    store_match = re.search(r"\b(?:store named|store called|at|for)\s+([a-z0-9][a-z0-9 '&.-]{2,})", lowered)
     if store_match:
-        filters["store_text"] = store_match.group(1).strip(" ?.!")
+        store_text = store_match.group(1).strip(" ?.!")
+        if store_text not in STORE_FILTER_STOPWORDS:
+            filters["store_text"] = store_text
     team_match = re.search(r"\b([a-z][a-z0-9']+)\s+(?:team|group)\b", lowered)
     if team_match:
         filters["manager_team"] = team_match.group(1).strip("'")
