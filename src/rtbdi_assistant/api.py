@@ -121,7 +121,10 @@ def create_app() -> FastAPI:
                         await runner.set_date_range(page, plan.date_range, required=False)
                         await runner.generate(page, required=False)
                         exports[report_id] = await _download_or_fallback_export(runner, page, report_id)
-                result = answer_from_exports(intent.canonical_question, exports)
+                answer_question = intent.canonical_question
+                if intent.original_question.casefold() not in answer_question.casefold():
+                    answer_question = f"{intent.canonical_question} {intent.original_question}"
+                result = answer_from_exports(answer_question, exports)
                 memory.update(result.context)
                 memory.save(memory_path)
                 return ChatResponse(

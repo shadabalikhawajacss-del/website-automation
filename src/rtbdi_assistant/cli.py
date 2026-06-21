@@ -246,7 +246,10 @@ async def _live_answer(args: argparse.Namespace) -> dict[str, object]:
         }
 
     exports = {report_id: await _download_live_report(report_id, plan.date_range, args) for report_id in intent.report_ids}
-    result = answer_from_exports(intent.canonical_question, exports)
+    answer_question = intent.canonical_question
+    if intent.original_question.casefold() not in answer_question.casefold():
+        answer_question = f"{intent.canonical_question} {intent.original_question}"
+    result = answer_from_exports(answer_question, exports)
     memory.update(result.context)
     memory_path = Path(args.memory) if args.memory else None
     memory.save(memory_path)
