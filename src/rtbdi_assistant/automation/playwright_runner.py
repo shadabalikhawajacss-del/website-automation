@@ -139,6 +139,31 @@ class PlaywrightReportRunner:
     async def set_date_range(self, page: Page, report_range: DateRange) -> None:
         # The site uses a date picker; direct input is more stable than clicking calendar cells.
         rendered = f"{report_range.start:%B %-d, %Y} - {report_range.end:%B %-d, %Y}"
+        hidden_start = page.locator("#frmStart, input[name='frmStart']").first
+        hidden_end = page.locator("#frmEnd, input[name='frmEnd']").first
+        if await hidden_start.count() and await hidden_end.count():
+            await page.evaluate(
+                """({start, end, rendered}) => {
+                    const assign = (selector, value) => {
+                        const input = document.querySelector(selector);
+                        if (!input) return;
+                        input.value = value;
+                        input.dispatchEvent(new Event('input', { bubbles: true }));
+                        input.dispatchEvent(new Event('change', { bubbles: true }));
+                    };
+                    assign("#frmStart, input[name='frmStart']", start);
+                    assign("#frmEnd, input[name='frmEnd']", end);
+                    const range = document.querySelector("#reportrange span") || document.querySelector("#reportrange");
+                    if (range) range.textContent = rendered;
+                }""",
+                {
+                    "start": f"{report_range.start:%m/%d/%Y}",
+                    "end": f"{report_range.end:%m/%d/%Y}",
+                    "rendered": rendered,
+                },
+            )
+            return
+
         candidates = [
             "input[name*='ReportRange']",
             "input[name*='daterange']",
@@ -166,15 +191,20 @@ class PlaywrightReportRunner:
         await page.keyboard.press("Enter")
 
     async def generate(self, page: Page) -> None:
-        await page.get_by_role("button", name="Generate").click()
+        button = page.locator(".refresh-button").filter(has_text="Generate").first
+        if not await button.count():
+            button = page.get_by_text("Generate", exact=True).last
+        await button.click()
         await page.wait_for_load_state("networkidle")
 
     async def download_export(self, page: Page) -> Path:
         self.config.downloads_dir.mkdir(parents=True, exist_ok=True)
         async with page.expect_download() as download_info:
-            export_button = page.locator("button, input[type='button'], a").filter(has_text="Excel").first
+            export_button = page.locator(".export-xlsx-button").first
             if not await export_button.count():
-                export_button = page.locator("button, input[type='button'], a").filter(has_text="Export").first
+                export_button = page.locator("button, input[type='button'], a, div").filter(has_text="Excel").first
+            if not await export_button.count():
+                export_button = page.locator("button, input[type='button'], a, div").filter(has_text="Export").first
             await export_button.click()
         download = await download_info.value
         target = self.config.downloads_dir / download.suggested_filename

@@ -73,6 +73,15 @@ rtbdi login-session --storage-state /secure/path/rtbdi-storage-state.json
 
 After that, set `RTBDI_STORAGE_STATE=/secure/path/rtbdi-storage-state.json` for live report runs.
 
+Generate and download a live report export:
+
+```bash
+RTBDI_STORAGE_STATE=/secure/path/rtbdi-storage-state.json \
+rtbdi live-export employee_conversion_ratio --start 2026-06-01 --end 2026-06-21
+```
+
+The command prints the downloaded export path plus detected sheet/column metadata.
+
 ## Current status
 
 The map is a working seed from the supplied files. Reports with exports have exact column names. Reports represented only by screenshots are included with page/filter metadata where visible and marked for live validation before answering production questions.

@@ -4,12 +4,14 @@ import argparse
 import asyncio
 import json
 from dataclasses import asdict
+from datetime import date
 from pathlib import Path
 
 from .automation.playwright_runner import BrowserConfig, PlaywrightReportRunner
 from .exports import iter_export_files, summarize_export
 from .knowledge import load_knowledge
 from .llm import OpenAIInterpreter, preview_interpreter_prompt
+from .models import DateRange
 from .planner import plan_question, plan_to_dict
 
 
@@ -85,6 +87,33 @@ def _cmd_login_session(args: argparse.Namespace) -> int:
     return 0
 
 
+async def _live_export(args: argparse.Namespace) -> Path:
+    km = load_knowledge(args.knowledge) if args.knowledge else load_knowledge()
+    report = km.get(args.report_id)
+    start = date.fromisoformat(args.start)
+    end = date.fromisoformat(args.end)
+    if start > end:
+        raise SystemExit("--start must be on or before --end")
+    config = BrowserConfig.from_env(headless=not args.headful, downloads_dir=Path(args.downloads_dir))
+    async with PlaywrightReportRunner(config) as runner:
+        page = await runner.new_page()
+        if not config.storage_state:
+            await runner.login(page)
+        await runner.open_report(page, report)
+        await runner.set_date_range(page, DateRange(start, end, f"{start.isoformat()} to {end.isoformat()}", explicit=True))
+        await runner.generate(page)
+        return await runner.download_export(page)
+
+
+def _cmd_live_export(args: argparse.Namespace) -> int:
+    path = asyncio.run(_live_export(args))
+    summary = summarize_export(path)
+    payload = asdict(summary)
+    payload["path"] = str(path)
+    print(json.dumps(payload, indent=2, default=str))
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="rtbdi")
     subparsers = parser.add_subparsers(required=True)
@@ -116,6 +145,15 @@ def build_parser() -> argparse.ArgumentParser:
     login.add_argument("--storage-state", help="Path to save Playwright storage state JSON")
     login.add_argument("--downloads-dir", default="downloads")
     login.set_defaults(func=_cmd_login_session)
+
+    live_export = subparsers.add_parser("live-export", help="Generate a live RT BDI report and download its export")
+    live_export.add_argument("report_id", help="Report id from knowledge/report_map.json")
+    live_export.add_argument("--start", required=True, help="Inclusive start date, YYYY-MM-DD")
+    live_export.add_argument("--end", required=True, help="Inclusive end date, YYYY-MM-DD")
+    live_export.add_argument("--knowledge")
+    live_export.add_argument("--headful", action="store_true", help="Show the browser while running")
+    live_export.add_argument("--downloads-dir", default="downloads")
+    live_export.set_defaults(func=_cmd_live_export)
     return parser
 
 
