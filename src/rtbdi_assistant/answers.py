@@ -4,6 +4,7 @@ import re
 from dataclasses import dataclass
 from decimal import Decimal
 from pathlib import Path
+from typing import Any
 
 import pandas as pd
 
@@ -20,6 +21,7 @@ class AnswerResult:
     date_range: DateRange
     rows_used: int
     notes: tuple[str, ...] = ()
+    context: dict[str, Any] | None = None
 
 
 STOPWORDS = {
@@ -276,11 +278,19 @@ def _answer_employee_ranking(question: str, path: Path, date_range: DateRange) -
         value = getattr(row, metric)
         rendered = money(value) if "accessory" in label else number(value)
         lines.append(f"{idx}. {display_value(row.name)} ({display_value(row.username)}) - {rendered}")
+    context = None
+    if not ranked.empty:
+        first = ranked.iloc[0]
+        context = {
+            "last_employee": {"username": display_value(first["username"]), "name": display_value(first["name"])},
+            "last_metric": label,
+        }
     return AnswerResult(
         f"Top {len(lines)} employees by {label}: " + "; ".join(lines) + ".",
         ("employee_ranking_by_box_sales",),
         date_range,
         len(df),
+        context=context,
     )
 
 
@@ -301,7 +311,14 @@ def _answer_kpi_ranking(question: str, path: Path, date_range: DateRange) -> Ans
         f"{idx}. {display_value(row.name)} ({display_value(row.username)}) - {money(getattr(row, metric))}"
         for idx, row in enumerate(ranked.itertuples(index=False), start=1)
     ]
-    return AnswerResult(f"Top {len(lines)} employees by {label}: " + "; ".join(lines) + ".", ("kpi_report_by_employee",), date_range, len(df))
+    context = None
+    if not ranked.empty:
+        first = ranked.iloc[0]
+        context = {
+            "last_employee": {"username": display_value(first["username"]), "name": display_value(first["name"])},
+            "last_metric": label,
+        }
+    return AnswerResult(f"Top {len(lines)} employees by {label}: " + "; ".join(lines) + ".", ("kpi_report_by_employee",), date_range, len(df), context=context)
 
 
 PLAN_COLUMNS = (
@@ -396,6 +413,12 @@ def _answer_top_seller_multireport(question: str, exports: dict[str, Path], date
         ("employee_ranking_by_box_sales", "employee_mrc_matrix_report", "kpi_report_by_employee", "inventory_report"),
         date_range,
         len(ranking) + len(mrc) + len(kpi) + len(inventory),
+        context={
+            "last_employee": {"username": display_value(top_username), "name": display_value(top["name"])},
+            "second_employee": {"username": display_value(second_username), "name": display_value(second["name"])},
+            "last_stores": stores,
+            "last_metric": "total activations",
+        },
     )
 
 
@@ -414,7 +437,17 @@ def _answer_top_accessory_with_kpi(question: str, exports: dict[str, Path], date
         f"Top accessory seller is {display_value(top['name'])} ({display_value(top_username)}) with {money(top['totaccessory'])} in accessory sales. "
         f"Their gross profit is {money(gross_profit)} and their store(s) are {', '.join(stores) if stores else 'not found in KPI report'}."
     )
-    return AnswerResult(answer, ("employee_ranking_by_box_sales", "kpi_report_by_employee"), date_range, len(ranking) + len(kpi))
+    return AnswerResult(
+        answer,
+        ("employee_ranking_by_box_sales", "kpi_report_by_employee"),
+        date_range,
+        len(ranking) + len(kpi),
+        context={
+            "last_employee": {"username": display_value(top_username), "name": display_value(top["name"])},
+            "last_stores": stores,
+            "last_metric": "accessory sales",
+        },
+    )
 
 
 def _column_or_zero(df: pd.DataFrame, column: str) -> pd.Series:
@@ -629,7 +662,7 @@ def _answer_conversion(question: str, path: Path, date_range: DateRange) -> Answ
             answer = f"I found no conversion-ratio rows for {store_text}."
         else:
             answer = f"Average conversion ratio at {store_text} is {avg:,.2f}%."
-        return AnswerResult(answer, ("employee_conversion_ratio",), date_range, len(filtered))
+        return AnswerResult(answer, ("employee_conversion_ratio",), date_range, len(filtered), context={"last_stores": [store_text]})
 
     rows, problem = _employee_rows(filtered, question)
     if problem:
@@ -651,7 +684,14 @@ def _answer_conversion(question: str, path: Path, date_range: DateRange) -> Answ
             parts.append(f"conversion ratio is {ratio:,.2f}%")
     if not parts:
         parts.append(f"conversion ratio is {percent(employee.get('ratio'))}")
-    return AnswerResult(f"{name} ({username}) " + " and ".join(parts) + ".", ("employee_conversion_ratio",), date_range, len(rows))
+    stores = sorted({display_value(value) for value in rows.get("company", []) if display_value(value) != "unknown"})
+    return AnswerResult(
+        f"{name} ({username}) " + " and ".join(parts) + ".",
+        ("employee_conversion_ratio",),
+        date_range,
+        len(rows),
+        context={"last_employee": {"username": username, "name": name}, "last_stores": stores},
+    )
 
 
 def _answer_performance(question: str, path: Path, date_range: DateRange) -> AnswerResult:
@@ -664,17 +704,17 @@ def _answer_performance(question: str, path: Path, date_range: DateRange) -> Ans
 
     if ("how many employees" in lowered or "employees at" in lowered or "employees work" in lowered) and store_text:
         count = filtered["username"].nunique() if "username" in filtered.columns else len(filtered)
-        return AnswerResult(f"{store_text} has {count:,} employees in Employee Performance Report.", ("employee_performance_report",), date_range, len(filtered))
+        return AnswerResult(f"{store_text} has {count:,} employees in Employee Performance Report.", ("employee_performance_report",), date_range, len(filtered), context={"last_stores": [store_text]})
 
     if store_text and ("total accessory" in lowered or "accessory sales" in lowered):
         column = "totaccessoryprofit" if "profit" in lowered else "totaccessory"
         total = decimal_sum(filtered[column]) if column in filtered.columns else Decimal("0")
         label = "accessory profit" if column == "totaccessoryprofit" else "accessory sales"
-        return AnswerResult(f"Total {label} at {store_text} is {money(total)}.", ("employee_performance_report",), date_range, len(filtered))
+        return AnswerResult(f"Total {label} at {store_text} is {money(total)}.", ("employee_performance_report",), date_range, len(filtered), context={"last_stores": [store_text], "last_metric": label})
 
     if store_text and ("total boxes" in lowered or "total activations" in lowered or "phones" in lowered):
         total = decimal_sum(filtered["totact"]) if "totact" in filtered.columns else Decimal("0")
-        return AnswerResult(f"Total activations at {store_text} are {number(total)}.", ("employee_performance_report",), date_range, len(filtered))
+        return AnswerResult(f"Total activations at {store_text} are {number(total)}.", ("employee_performance_report",), date_range, len(filtered), context={"last_stores": [store_text], "last_metric": "total activations"})
 
     rows, problem = _employee_rows(filtered, question)
     if problem:
@@ -701,7 +741,13 @@ def _answer_performance(question: str, path: Path, date_range: DateRange) -> Ans
     else:
         answer = f"{name} ({username}) works at {store}."
 
-    return AnswerResult(answer, ("employee_performance_report",), date_range, len(rows))
+    return AnswerResult(
+        answer,
+        ("employee_performance_report",),
+        date_range,
+        len(rows),
+        context={"last_employee": {"username": username, "name": name}, "last_stores": stores},
+    )
 
 
 def _answer_store_ranking(question: str, df: pd.DataFrame, date_range: DateRange) -> AnswerResult:

@@ -113,6 +113,24 @@ rtbdi live-answer "Total transfer cost between stores last month."
 The merged examples generate multiple reports, join by employee/store, and then
 calculate the answer from the downloaded exports.
 
+The live answer command also normalizes casual wording and can remember the
+previous answer for follow-ups:
+
+```bash
+rtbdi live-answer "who's number one in phone sales?"
+rtbdi live-answer "what are their accessories?"
+```
+
+Examples of normalized wording:
+
+- "phone sales", "boxes", "acts" -> activations
+- "acc", "attach", "accessories" -> accessory sales
+- "make us", "profit", "GP" -> gross profit
+- "stock", "on hand" -> inventory
+- "their", "she", "he", "that employee" -> previous employee from memory
+
+By default memory is stored in `.rtbdi-memory.json`, which is ignored by git.
+
 Validate live report export coverage:
 
 ```bash

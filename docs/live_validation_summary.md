@@ -105,3 +105,6 @@ can add report-specific handlers or confirm account permissions.
 - `Total transfer cost between stores last month.` -> $192,888.26
 - `Top accessory seller - what's their gross profit and store?` -> Aftab, gross profit $-12,712.18, stores ROCKON ROSENBERG and ROCKON WALLER
 - `Top seller's plan mix, their store inventory, and gross profit vs #2.` -> generated and merged ranking, MRC matrix, KPI, and inventory exports
+- Flexible wording + memory chain:
+  - `who's number one in phone sales?` -> normalized to activations and answered top employee
+  - `what are their accessories?` -> used the remembered employee and answered accessory sales
