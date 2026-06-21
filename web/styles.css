@@ -43,6 +43,26 @@ h1 {
   max-width: 680px;
 }
 
+.connection-status {
+  display: inline-flex;
+  margin: 8px 0 0;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: #1f2937;
+  color: #cbd5e1;
+  font-size: 0.9rem;
+}
+
+.connection-status.ok {
+  background: rgba(34, 197, 94, 0.16);
+  color: #86efac;
+}
+
+.connection-status.error {
+  background: rgba(239, 68, 68, 0.16);
+  color: #fca5a5;
+}
+
 button {
   border: 0;
   border-radius: 999px;
@@ -67,9 +87,37 @@ button {
   border: 1px solid #253149;
 }
 
+.message-body {
+  line-height: 1.55;
+  white-space: pre-wrap;
+}
+
 .message.user {
   margin-left: auto;
   background: #22324f;
+}
+
+.message.assistant {
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.2);
+}
+
+.message.pending {
+  color: #cbd5e1;
+}
+
+.message.pending .message-body::after {
+  content: "";
+  display: inline-block;
+  width: 1.2em;
+  text-align: left;
+  animation: dots 1.2s steps(4, end) infinite;
+}
+
+@keyframes dots {
+  0% { content: ""; }
+  25% { content: "."; }
+  50% { content: ".."; }
+  75% { content: "..."; }
 }
 
 .message.error {
@@ -77,7 +125,43 @@ button {
   border-color: #7f1d1d;
 }
 
-.message pre {
+.message-meta {
+  margin-top: 14px;
+}
+
+.meta-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.pill {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: #0d1322;
+  border: 1px solid #27364f;
+  color: #cbd5e1;
+  font-size: 0.82rem;
+}
+
+.pill strong {
+  color: #f97316;
+}
+
+.technical-details {
+  color: #94a3b8;
+  font-size: 0.9rem;
+}
+
+.technical-details summary {
+  cursor: pointer;
+}
+
+.technical-details pre {
   overflow: auto;
   padding: 12px;
   border-radius: 12px;
