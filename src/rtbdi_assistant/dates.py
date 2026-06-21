@@ -36,6 +36,9 @@ def resolve_date_range(text: str, today: date | None = None) -> DateRange:
     if re.search(r"\b(month[- ]?to[- ]?date|mtd|this month)\b", value):
         return DateRange(date(today.year, today.month, 1), today, "month-to-date", explicit=True)
 
+    if re.search(r"\b(year[- ]?to[- ]?date|ytd|this year)\b", value):
+        return DateRange(date(today.year, 1, 1), today, "year-to-date", explicit=True)
+
     if re.search(r"\b(yesterday)\b", value):
         day = today - timedelta(days=1)
         return DateRange(day, day, "yesterday", explicit=True)

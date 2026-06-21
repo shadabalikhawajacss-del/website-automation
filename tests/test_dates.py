@@ -20,3 +20,10 @@ def test_last_days_is_inclusive():
     resolved = resolve_date_range("last 7 days", today=date(2026, 6, 21))
     assert resolved.start == date(2026, 6, 15)
     assert resolved.end == date(2026, 6, 21)
+
+
+def test_year_to_date():
+    resolved = resolve_date_range("year-to-date total activations", today=date(2026, 6, 21))
+    assert resolved.start == date(2026, 1, 1)
+    assert resolved.end == date(2026, 6, 21)
+    assert resolved.label == "year-to-date"
