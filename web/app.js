@@ -70,10 +70,33 @@ function addMessage(role, content, meta = {}) {
   return article;
 }
 
+function apiHeaders(extra = {}) {
+  return {
+    "ngrok-skip-browser-warning": "true",
+    ...extra,
+  };
+}
+
+function markBackendConnected(browser = "playwright-chromium") {
+  connectionStatus.textContent = `Connected to live backend (${browser})`;
+  connectionStatus.className = "connection-status ok";
+}
+
+async function getJson(path) {
+  const response = await fetch(`${apiBase}${path}`, {
+    headers: apiHeaders(),
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.detail || "Request failed");
+  }
+  return data;
+}
+
 async function postJson(path, payload) {
   const response = await fetch(`${apiBase}${path}`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: apiHeaders({ "Content-Type": "application/json" }),
     body: JSON.stringify(payload),
   });
   const data = await response.json();
@@ -85,11 +108,8 @@ async function postJson(path, payload) {
 
 async function checkBackend() {
   try {
-    const response = await fetch(`${apiBase}/health`);
-    const data = await response.json();
-    if (!response.ok) throw new Error("Backend unavailable");
-    connectionStatus.textContent = `Connected to live backend (${data.browser})`;
-    connectionStatus.className = "connection-status ok";
+    const data = await getJson("/health");
+    markBackendConnected(data.browser);
   } catch (error) {
     connectionStatus.textContent = "Backend not connected. Check API URL / tunnel.";
     connectionStatus.className = "connection-status error";
@@ -105,6 +125,7 @@ form.addEventListener("submit", async (event) => {
   const pending = addMessage("assistant pending", "Working live RT BDI reports...");
   try {
     const data = await postJson("/chat", { question, session_id: sessionId });
+    markBackendConnected();
     pending.remove();
     addMessage("assistant", data.answer, {
       canonical_question: data.canonical_question,
@@ -130,9 +151,8 @@ document.querySelector("#homeSnapshot").addEventListener("click", async () => {
   addMessage("user", "Home dashboard snapshot");
   const pending = addMessage("assistant pending", "Reading the live Home dashboard...");
   try {
-    const response = await fetch(`${apiBase}/home-snapshot`);
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.detail || "Home snapshot failed");
+    const data = await getJson("/home-snapshot");
+    markBackendConnected();
     const summary = data.period_summary?.[0] || {};
     pending.remove();
     addMessage("assistant", "Loaded Home dashboard snapshot.", {
