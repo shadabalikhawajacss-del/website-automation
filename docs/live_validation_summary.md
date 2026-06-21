@@ -108,3 +108,6 @@ can add report-specific handlers or confirm account permissions.
 - Flexible wording + memory chain:
   - `who's number one in phone sales?` -> normalized to activations and answered top employee
   - `what are their accessories?` -> used the remembered employee and answered accessory sales
+- Home dashboard live-answer:
+  - `How are we doing today on the dashboard?` -> answered from Home today's snapshot
+  - `Top 5 stores right now on Home` -> answered from Home Top 10 Stores table

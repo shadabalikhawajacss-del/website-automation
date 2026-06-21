@@ -139,6 +139,8 @@ Extract Home dashboard data:
 
 ```bash
 rtbdi live-home
+rtbdi live-answer "How are we doing today on the dashboard?"
+rtbdi live-answer "Top 5 stores right now on Home"
 ```
 
 ## Chatbot UI and backend

@@ -9,6 +9,12 @@ def test_canonicalizes_casual_metric_words():
     assert intent.report_ids == ("employee_ranking_by_box_sales",)
 
 
+def test_dashboard_questions_route_to_home():
+    intent = select_live_reports("How are we doing today on the dashboard?")
+
+    assert intent.report_ids == ("home_dashboard",)
+
+
 def test_selects_inventory_for_stock_words():
     intent = select_live_reports("how many samsung handsets are on hand?")
 

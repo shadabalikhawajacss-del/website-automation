@@ -1,9 +1,13 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import date
 from typing import Any
 
 from playwright.async_api import Page
+
+from .answers import AnswerResult
+from .models import DateRange
 
 
 @dataclass(frozen=True)
@@ -72,4 +76,82 @@ async def extract_home_snapshot(page: Page) -> HomeSnapshot:
         today_snapshot=today_snapshot,
         previous_day_rows=previous_day_rows,
         chart_tables=chart_tables,
+    )
+
+
+def _top_n_from_question(question: str, default: int = 10) -> int:
+    import re
+
+    match = re.search(r"\btop\s+(\d+)", question, flags=re.IGNORECASE)
+    return int(match.group(1)) if match else default
+
+
+def answer_home_question(question: str, snapshot: HomeSnapshot) -> AnswerResult:
+    lowered = question.casefold()
+    today = date.today()
+    report_range = DateRange(today, today, "home dashboard", explicit=False)
+
+    if "today" in lowered or "snapshot" in lowered:
+        values = ", ".join(f"{key}: {value}" for key, value in snapshot.today_snapshot.items())
+        return AnswerResult(
+            f"Today's Home snapshot: {values}.",
+            ("home_dashboard",),
+            report_range,
+            1 if snapshot.today_snapshot else 0,
+            context={"last_metric": "today snapshot"},
+        )
+
+    if "top" in lowered and "store" in lowered:
+        count = _top_n_from_question(question)
+        rows = snapshot.top_stores[:count]
+        lines = [
+            f"{idx}. {row.get('Store Name', 'unknown')} - {row.get('PPD (Tot Act)', 'unknown')} activations, {row.get('Accessory', 'unknown')} accessory, {row.get('Qpay Conv%', 'unknown')} conversion"
+            for idx, row in enumerate(rows, start=1)
+        ]
+        return AnswerResult(
+            f"Home Top {len(rows)} stores: " + "; ".join(lines) + ".",
+            ("home_dashboard",),
+            report_range,
+            len(rows),
+            context={"last_stores": [row.get("Store Name", "") for row in rows if row.get("Store Name")], "last_metric": "home top stores"},
+        )
+
+    if "previous" in lowered or "yesterday" in lowered:
+        rows = snapshot.previous_day_rows[:_top_n_from_question(question, default=10)]
+        lines = [
+            f"{idx}. {row.get('Store Name / Company Name', 'unknown')} - boxes {row.get('Box Cnt', 'unknown')}, accessory {row.get('Acc Sale', 'unknown')}, MTD {row.get('MTD Tot', 'unknown')}"
+            for idx, row in enumerate(rows, start=1)
+        ]
+        return AnswerResult(
+            f"Previous-day Home rows: " + "; ".join(lines) + ".",
+            ("home_dashboard",),
+            report_range,
+            len(rows),
+            context={"last_stores": [row.get("Store Name / Company Name", "") for row in rows if row.get("Store Name / Company Name")], "last_metric": "previous day"},
+        )
+
+    summary = snapshot.period_summary[0] if snapshot.period_summary else {}
+    if "conversion" in lowered:
+        answer = f"Home period conversion is {summary.get('Conversion (CPD)', 'unknown')} with {summary.get('Qpay Count', 'unknown')} qpay count and {summary.get('Total Activation', 'unknown')} activations."
+    elif "accessory" in lowered:
+        answer = f"Home period accessory total is {summary.get('Accessory', 'unknown')} across {summary.get('Store Count', 'unknown')} stores; APD is {summary.get('Acc. Per Door (APD)', 'unknown')}."
+    elif "activation" in lowered or "how are we doing" in lowered or "doing" in lowered:
+        answer = (
+            f"Home period summary: {summary.get('Total Activation', 'unknown')} activations, "
+            f"{summary.get('Act. Per Door (PPD)', 'unknown')} PPD, {summary.get('Accessory', 'unknown')} accessory, "
+            f"{summary.get('Qpay Count', 'unknown')} qpay, {summary.get('Conversion (CPD)', 'unknown')} conversion."
+        )
+    else:
+        answer = (
+            f"Home dashboard summary: {summary.get('Total Activation', 'unknown')} activations, "
+            f"{summary.get('Accessory', 'unknown')} accessory, {summary.get('Conversion (CPD)', 'unknown')} conversion. "
+            f"Today: {', '.join(f'{key}: {value}' for key, value in snapshot.today_snapshot.items())}."
+        )
+
+    return AnswerResult(
+        answer,
+        ("home_dashboard",),
+        report_range,
+        len(snapshot.period_summary),
+        context={"last_metric": "home dashboard"},
     )

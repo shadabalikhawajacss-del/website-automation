@@ -11,7 +11,7 @@ from pydantic import BaseModel
 from .answers import answer_from_exports
 from .automation.playwright_runner import BrowserConfig, PlaywrightReportRunner
 from .cli import GRID_EXPORT_REPORTS, EXPORT_BUTTON_REPORTS
-from .home import extract_home_snapshot
+from .home import answer_home_question, extract_home_snapshot
 from .intent import ConversationMemory, select_live_reports
 from .models import DateRange
 from .planner import plan_question
@@ -55,6 +55,34 @@ def create_app() -> FastAPI:
         memory = ConversationMemory.load(memory_path)
         with TemporaryDirectory() as tmpdir:
             intent = select_live_reports(request.question, memory)
+            config = BrowserConfig.from_env(downloads_dir=Path(tmpdir) / "downloads")
+            if intent.report_ids == ("home_dashboard",):
+                try:
+                    async with PlaywrightReportRunner(config) as runner:
+                        page = await runner.new_page()
+                        if not config.storage_state:
+                            await runner.login(page)
+                        await page.goto(config.base_url, wait_until="domcontentloaded")
+                        snapshot = await extract_home_snapshot(page)
+                    result = answer_home_question(intent.canonical_question, snapshot)
+                    memory.update(result.context)
+                    memory.save(memory_path)
+                    return ChatResponse(
+                        answer=result.answer,
+                        canonical_question=intent.canonical_question,
+                        memory_used=intent.memory_used,
+                        reports_used=list(result.reports_used),
+                        date_range={
+                            "start": result.date_range.start.isoformat(),
+                            "end": result.date_range.end.isoformat(),
+                            "label": result.date_range.label,
+                        },
+                        rows_used=result.rows_used,
+                        notes=list(result.notes),
+                    )
+                except Exception as exc:
+                    raise HTTPException(status_code=500, detail=f"{type(exc).__name__}: {exc}") from exc
+
             plan = plan_question(intent.canonical_question)
             if plan.needs_clarification:
                 return ChatResponse(
@@ -68,7 +96,6 @@ def create_app() -> FastAPI:
                 )
 
             try:
-                config = BrowserConfig.from_env(downloads_dir=Path(tmpdir) / "downloads")
                 exports = {}
                 async with PlaywrightReportRunner(config) as runner:
                     for report_id in intent.report_ids:

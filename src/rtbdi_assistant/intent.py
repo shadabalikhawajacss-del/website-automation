@@ -115,7 +115,16 @@ def select_live_reports(question: str, memory: ConversationMemory | None = None)
     canonical, memory_used = canonicalize_question(question, memory)
     lowered = canonical.casefold()
 
-    if "plan mix" in lowered and "inventory" in lowered and ("gross profit" in lowered or "#2" in lowered):
+    if (
+        "home" in lowered
+        or "dashboard" in lowered
+        or "how are we doing" in lowered
+        or "today snapshot" in lowered
+        or ("top" in lowered and "store" in lowered and ("right now" in lowered or "dashboard" in lowered))
+        or ("company" in lowered and ("conversion" in lowered or "summary" in lowered))
+    ):
+        report_ids = ("home_dashboard",)
+    elif "plan mix" in lowered and "inventory" in lowered and ("gross profit" in lowered or "#2" in lowered):
         report_ids = ("employee_ranking_by_box_sales", "employee_mrc_matrix_report", "kpi_report_by_employee", "inventory_report")
     elif "finance" in lowered and "gross profit" in lowered:
         report_ids = ("finance_report", "kpi_report_by_employee")

@@ -13,7 +13,7 @@ from pypdf import PdfReader
 from .answers import answer_from_exports
 from .automation.playwright_runner import BrowserConfig, PlaywrightReportRunner
 from .exports import iter_export_files, summarize_export
-from .home import extract_home_snapshot
+from .home import answer_home_question, extract_home_snapshot
 from .intent import ConversationMemory, select_live_reports
 from .knowledge import load_knowledge
 from .llm import OpenAIInterpreter, preview_interpreter_prompt
@@ -109,6 +109,16 @@ async def _home_snapshot(args: argparse.Namespace) -> dict[str, object]:
         return asdict(snapshot)
 
 
+async def _download_home_snapshot(args: argparse.Namespace):
+    config = BrowserConfig.from_env(headless=not args.headful, downloads_dir=Path(args.downloads_dir))
+    async with PlaywrightReportRunner(config) as runner:
+        page = await runner.new_page()
+        if not config.storage_state:
+            await runner.login(page)
+        await page.goto(config.base_url, wait_until="domcontentloaded")
+        return await extract_home_snapshot(page)
+
+
 def _cmd_live_home(args: argparse.Namespace) -> int:
     print(json.dumps(asyncio.run(_home_snapshot(args)), indent=2))
     return 0
@@ -166,6 +176,27 @@ def _cmd_live_export(args: argparse.Namespace) -> int:
 async def _live_answer(args: argparse.Namespace) -> dict[str, object]:
     memory = ConversationMemory.load(Path(args.memory) if args.memory else None)
     intent = select_live_reports(args.question, memory)
+    if intent.report_ids == ("home_dashboard",):
+        snapshot = await _download_home_snapshot(args)
+        result = answer_home_question(intent.canonical_question, snapshot)
+        memory.update(result.context)
+        memory_path = Path(args.memory) if args.memory else None
+        memory.save(memory_path)
+        return {
+            "answer": result.answer,
+            "reports_used": list(result.reports_used),
+            "canonical_question": intent.canonical_question,
+            "memory_used": intent.memory_used,
+            "date_range": {
+                "start": result.date_range.start.isoformat(),
+                "end": result.date_range.end.isoformat(),
+                "label": result.date_range.label,
+            },
+            "rows_used": result.rows_used,
+            "notes": list(result.notes),
+            "exports": {},
+        }
+
     plan = plan_question(intent.canonical_question)
     if plan.needs_clarification:
         return {
