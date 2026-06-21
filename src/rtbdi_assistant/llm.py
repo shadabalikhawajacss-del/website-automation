@@ -30,6 +30,28 @@ LIVE_REPORT_ROUTE_HINTS = {
 }
 
 
+def reconcile_live_intent(deterministic: LiveIntent, llm_intent: LiveIntent | None) -> LiveIntent:
+    """Keep LLM routing inside safe deterministic guardrails.
+
+    The deterministic layer catches concrete product/model/report words. If the
+    LLM falls back to the broad Employee Performance report while deterministic
+    routing found a more specific report, prefer the deterministic route.
+    """
+
+    if llm_intent is None:
+        return deterministic
+    if llm_intent.needs_clarification:
+        return llm_intent
+    if not llm_intent.report_ids:
+        return deterministic
+    if (
+        deterministic.report_ids != ("employee_performance_report",)
+        and llm_intent.report_ids == ("employee_performance_report",)
+    ):
+        return deterministic
+    return llm_intent
+
+
 def compact_knowledge_summary(knowledge: KnowledgeMap, max_columns_per_report: int = 30) -> list[dict[str, Any]]:
     """Return the part of the report map that is useful in an LLM prompt."""
 
@@ -142,7 +164,7 @@ class OpenAIInterpreter:
             temperature=0,
         )
         payload = json.loads(response.choices[0].message.content or "{}")
-        return live_intent_from_llm_payload(question, payload, memory) or deterministic
+        return reconcile_live_intent(deterministic, live_intent_from_llm_payload(question, payload, memory))
 
 
 def select_live_intent(question: str, memory: ConversationMemory | None = None, config: AssistantConfig | None = None) -> LiveIntent:
