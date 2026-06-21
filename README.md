@@ -113,6 +113,24 @@ rtbdi live-answer "Total transfer cost between stores last month."
 The merged examples generate multiple reports, join by employee/store, and then
 calculate the answer from the downloaded exports.
 
+Validate live report export coverage:
+
+```bash
+rtbdi validate-reports employee_conversion_ratio finance_report inventory_report \
+  --start 2026-06-01 --end 2026-06-21 --continue-on-error
+
+rtbdi validate-reports --all --start 2026-06-01 --end 2026-06-21 --continue-on-error
+```
+
+Evaluate a numbered question-bank PDF against the planner:
+
+```bash
+rtbdi eval-question-bank /path/to/RTBDI_BIG_Question_Bank.pdf --allow-clarifications
+```
+
+See `docs/live_validation_summary.md` for the latest live validation matrix and
+known report-specific edge cases.
+
 ## Current status
 
 The map is a working seed from the supplied files. Reports with exports have exact column names. Reports represented only by screenshots are included with page/filter metadata where visible and marked for live validation before answering production questions.

@@ -219,24 +219,38 @@ class PlaywrightReportRunner:
         await search.fill(value)
         await page.keyboard.press("Enter")
 
-    async def generate(self, page: Page) -> None:
+    async def generate(self, page: Page, *, required: bool = True) -> bool:
         button = page.locator(".refresh-button").filter(has_text="Generate").first
         if not await button.count():
             button = page.get_by_text("Generate", exact=True).last
+        if not await button.count():
+            if required:
+                raise RuntimeError("Could not find a Generate button on the report page")
+            return False
         await button.click()
         await page.wait_for_load_state("networkidle")
+        return True
 
-    async def download_export(self, page: Page, *, prefer_grid_export: bool = False) -> Path:
+    async def download_export(self, page: Page, *, prefer_grid_export: bool = False, prefer_export_button: bool = False) -> Path:
         self.config.downloads_dir.mkdir(parents=True, exist_ok=True)
         async with page.expect_download(timeout=120_000) as download_info:
-            export_button = page.locator(".dx-datagrid-export-button").first if prefer_grid_export else page.locator(".export-xlsx-button").first
+            if prefer_export_button:
+                export_button = page.locator(".column-picker-button").first
+            elif prefer_grid_export:
+                export_button = page.locator(".dx-datagrid-export-button").first
+            else:
+                export_button = page.locator(".export-xlsx-button").first
+            for fallback in (".export-xlsx-button", ".dx-datagrid-export-button", ".column-picker-button"):
+                if await export_button.count():
+                    break
+                export_button = page.locator(fallback).first
             if not await export_button.count():
-                export_button = page.locator(".export-xlsx-button").first if prefer_grid_export else page.locator(".dx-datagrid-export-button").first
+                export_button = page.locator("input[name='btnExcel'], input[value*='Excel']").first
             if not await export_button.count():
                 export_button = page.locator("button, input[type='button'], a, div").filter(has_text="Excel").first
             if not await export_button.count():
                 export_button = page.locator("button, input[type='button'], a, div").filter(has_text="Export").first
-            await export_button.click()
+            await export_button.click(no_wait_after=True)
         download = await download_info.value
         target = self.config.downloads_dir / download.suggested_filename
         await download.save_as(target)

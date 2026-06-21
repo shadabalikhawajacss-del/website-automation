@@ -3,9 +3,12 @@ from __future__ import annotations
 import argparse
 import asyncio
 import json
+import re
 from dataclasses import asdict
 from datetime import date
 from pathlib import Path
+
+from pypdf import PdfReader
 
 from .answers import answer_from_exports
 from .automation.playwright_runner import BrowserConfig, PlaywrightReportRunner
@@ -14,6 +17,9 @@ from .knowledge import load_knowledge
 from .llm import OpenAIInterpreter, preview_interpreter_prompt
 from .models import DateRange
 from .planner import plan_question, plan_to_dict
+
+GRID_EXPORT_REPORTS = {"finance_report", "trade_in_custom_report"}
+EXPORT_BUTTON_REPORTS = {"activation_mrc_by_employee"}
 
 
 def _cmd_plan(args: argparse.Namespace) -> int:
@@ -102,8 +108,12 @@ async def _live_export(args: argparse.Namespace) -> Path:
             await runner.login(page)
         await runner.open_report(page, report)
         await runner.set_date_range(page, DateRange(start, end, f"{start.isoformat()} to {end.isoformat()}", explicit=True), required=False)
-        await runner.generate(page)
-        return await runner.download_export(page, prefer_grid_export=report.id in {"finance_report", "trade_in_custom_report"})
+        await runner.generate(page, required=False)
+        return await runner.download_export(
+            page,
+            prefer_grid_export=report.id in GRID_EXPORT_REPORTS,
+            prefer_export_button=report.id in EXPORT_BUTTON_REPORTS,
+        )
 
 
 async def _download_live_report(report_id: str, report_range: DateRange, args: argparse.Namespace) -> Path:
@@ -116,8 +126,12 @@ async def _download_live_report(report_id: str, report_range: DateRange, args: a
             await runner.login(page)
         await runner.open_report(page, report)
         await runner.set_date_range(page, report_range, required=False)
-        await runner.generate(page)
-        return await runner.download_export(page, prefer_grid_export=report_id in {"finance_report", "trade_in_custom_report"})
+        await runner.generate(page, required=False)
+        return await runner.download_export(
+            page,
+            prefer_grid_export=report_id in GRID_EXPORT_REPORTS,
+            prefer_export_button=report_id in EXPORT_BUTTON_REPORTS,
+        )
 
 
 def _cmd_live_export(args: argparse.Namespace) -> int:
@@ -197,6 +211,126 @@ def _cmd_live_answer(args: argparse.Namespace) -> int:
     return 0
 
 
+async def _validate_reports(args: argparse.Namespace) -> list[dict[str, object]]:
+    km = load_knowledge(args.knowledge) if args.knowledge else load_knowledge()
+    requested = [report.id for report in km.reports if report.source_type != "dashboard"] if args.all else args.report_id
+    if args.limit:
+        requested = requested[: args.limit]
+    report_range = DateRange(date.fromisoformat(args.start), date.fromisoformat(args.end), f"{args.start} to {args.end}", explicit=True)
+    config = BrowserConfig.from_env(headless=not args.headful, downloads_dir=Path(args.downloads_dir))
+    results: list[dict[str, object]] = []
+    async with PlaywrightReportRunner(config) as runner:
+        for report_id in requested:
+            report = km.get(report_id)
+            result: dict[str, object] = {
+                "report_id": report.id,
+                "name": report.name,
+                "tab": report.tab,
+                "url_path": report.url_path,
+                "status": "pending",
+            }
+            try:
+                page = await runner.new_page()
+                if not config.storage_state:
+                    await runner.login(page)
+                await runner.open_report(page, report)
+                result["opened_url"] = page.url
+                if "accessdenied" in page.url.casefold() or "access denied" in (await page.locator("body").inner_text()).casefold():
+                    result.update({"status": "access_denied", "error": "The logged-in RT BDI user cannot access this report."})
+                    await page.close()
+                    results.append(result)
+                    continue
+                result["date_set"] = await runner.set_date_range(page, report_range, required=False)
+                await runner.generate(page, required=False)
+                path = await runner.download_export(
+                    page,
+                    prefer_grid_export=report.id in GRID_EXPORT_REPORTS,
+                    prefer_export_button=report.id in EXPORT_BUTTON_REPORTS,
+                )
+                summary = summarize_export(path)
+                result.update(
+                    {
+                        "status": "downloaded_parse_failed" if summary.error else "passed",
+                        "download_path": str(path),
+                        "kind": summary.kind,
+                        "sheets": [asdict(sheet) for sheet in summary.sheets],
+                        "error": summary.error,
+                    }
+                )
+                await page.close()
+            except Exception as exc:
+                result.update({"status": "failed", "error": f"{type(exc).__name__}: {exc}"})
+                if not args.continue_on_error:
+                    results.append(result)
+                    return results
+            results.append(result)
+    return results
+
+
+def _cmd_validate_reports(args: argparse.Namespace) -> int:
+    results = asyncio.run(_validate_reports(args))
+    print(json.dumps(results, indent=2, default=str))
+    failed = [result for result in results if result["status"] != "passed"]
+    return 1 if failed and args.fail_on_error else 0
+
+
+def _extract_numbered_questions(path: Path) -> list[tuple[int, str]]:
+    if path.suffix.casefold() == ".pdf":
+        text = "\n".join(page.extract_text() or "" for page in PdfReader(path).pages)
+    else:
+        text = path.read_text(encoding="utf-8")
+    questions: list[tuple[int, str]] = []
+    for line in text.splitlines():
+        match = re.match(r"^(\d+)\.\s+(.*)", line.strip())
+        if match:
+            questions.append((int(match.group(1)), match.group(2).strip()))
+    return questions
+
+
+def _cmd_eval_question_bank(args: argparse.Namespace) -> int:
+    km = load_knowledge(args.knowledge) if args.knowledge else load_knowledge()
+    questions = _extract_numbered_questions(Path(args.path))
+    expected_clarify = set(args.expected_clarify or [])
+    results = []
+    for number, question in questions:
+        plan = plan_question(question, km)
+        status = "passed"
+        reason = "routed"
+        if plan.needs_clarification:
+            status = "passed" if number in expected_clarify or args.allow_clarifications else "clarified"
+            reason = plan.needs_clarification
+        elif number in expected_clarify:
+            status = "failed"
+            reason = "expected clarification but planner routed the question"
+        elif not plan.report_ids:
+            status = "failed"
+            reason = "no report route"
+        results.append(
+            {
+                "number": number,
+                "question": question,
+                "status": status,
+                "reason": reason,
+                "reports": list(plan.report_ids),
+                "metrics": [asdict(metric) for metric in plan.metrics],
+                "date_range": {
+                    "start": plan.date_range.start.isoformat(),
+                    "end": plan.date_range.end.isoformat(),
+                    "label": plan.date_range.label,
+                },
+            }
+        )
+    payload = {
+        "total": len(results),
+        "passed": sum(1 for result in results if result["status"] == "passed"),
+        "failed": sum(1 for result in results if result["status"] == "failed"),
+        "clarified": sum(1 for result in results if result["status"] == "clarified"),
+        "results": results,
+    }
+    print(json.dumps(payload, indent=2))
+    return 1 if payload["failed"] else 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="rtbdi")
     subparsers = parser.add_subparsers(required=True)
@@ -244,6 +378,26 @@ def build_parser() -> argparse.ArgumentParser:
     live_answer.add_argument("--headful", action="store_true", help="Show the browser while running")
     live_answer.add_argument("--downloads-dir", default="downloads")
     live_answer.set_defaults(func=_cmd_live_answer)
+
+    validate = subparsers.add_parser("validate-reports", help="Open/generate/export mapped live reports and summarize results")
+    validate.add_argument("report_id", nargs="*", help="Report ids to validate")
+    validate.add_argument("--all", action="store_true", help="Validate every non-dashboard report in the knowledge map")
+    validate.add_argument("--start", required=True, help="Inclusive start date, YYYY-MM-DD")
+    validate.add_argument("--end", required=True, help="Inclusive end date, YYYY-MM-DD")
+    validate.add_argument("--knowledge")
+    validate.add_argument("--headful", action="store_true", help="Show the browser while running")
+    validate.add_argument("--downloads-dir", default="downloads/validation")
+    validate.add_argument("--continue-on-error", action="store_true")
+    validate.add_argument("--fail-on-error", action="store_true")
+    validate.add_argument("--limit", type=int)
+    validate.set_defaults(func=_cmd_validate_reports)
+
+    qbank = subparsers.add_parser("eval-question-bank", help="Evaluate a numbered question bank PDF/text file against the planner")
+    qbank.add_argument("path")
+    qbank.add_argument("--knowledge")
+    qbank.add_argument("--allow-clarifications", action="store_true")
+    qbank.add_argument("--expected-clarify", type=int, nargs="*", default=[109, 110, 111, 112, 113, 114])
+    qbank.set_defaults(func=_cmd_eval_question_bank)
     return parser
 
 
